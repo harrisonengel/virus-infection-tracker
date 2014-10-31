@@ -6,8 +6,12 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Component;
 import javax.swing.JTextField;
 import java.util.InputMismatchException;
+import javax.swing.JRadioButton;
+import java.awt.Choice;
+import java.awt.Label;
 
 public class patientPanel extends JPanel {
 	private JTextField textFieldFirstName;
@@ -15,11 +19,13 @@ public class patientPanel extends JPanel {
 	private JTextField textFieldLastName;
 	private JTextField textFieldSsn;
 	private JTextField textFieldAge;
-	private JTextField textFieldGender;
 	private JTextField textFieldCity;
 	private JTextField textFieldState;
-	private JTextField textFieldDate;
 	private JLabel lblInputPatientInfo;
+	private JTextField textFieldYear;
+	private JRadioButton rdbtnMale;
+	private Choice choiceMonth;
+	private Choice choiceDay;
 
 	/**
 	 * Create the panel.
@@ -114,11 +120,6 @@ public class patientPanel extends JPanel {
 		textFieldAge.setBounds(140, 156, 175, 25);
 		add(textFieldAge);
 
-		textFieldGender = new JTextField();
-		textFieldGender.setColumns(10);
-		textFieldGender.setBounds(140, 192, 175, 25);
-		add(textFieldGender);
-
 		textFieldCity = new JTextField();
 		textFieldCity.setColumns(10);
 		textFieldCity.setBounds(140, 228, 175, 25);
@@ -129,16 +130,69 @@ public class patientPanel extends JPanel {
 		textFieldState.setBounds(140, 266, 175, 25);
 		add(textFieldState);
 
-		textFieldDate = new JTextField();
-		textFieldDate.setColumns(10);
-		textFieldDate.setBounds(140, 300, 175, 25);
-		add(textFieldDate);
-
 		lblInputPatientInfo = new JLabel("INPUT PATIENT INFO");
 		lblInputPatientInfo.setForeground(Color.GREEN);
 		lblInputPatientInfo.setFont(new Font("DialogInput", Font.BOLD, 20));
 		lblInputPatientInfo.setBounds(54, 364, 261, 25);
 		add(lblInputPatientInfo);
+		
+		rdbtnMale = new JRadioButton("MALE");
+		rdbtnMale.setFont(new Font("Tahoma", Font.BOLD, 14));
+		rdbtnMale.setForeground(new Color(0, 255, 0));
+		rdbtnMale.setBackground(Color.DARK_GRAY);
+		rdbtnMale.setBounds(140, 193, 74, 23);
+		add(rdbtnMale);
+		
+		JRadioButton rdbtnFemale = new JRadioButton("FEMALE");
+		rdbtnFemale.setForeground(Color.GREEN);
+		rdbtnFemale.setFont(new Font("Tahoma", Font.BOLD, 14));
+		rdbtnFemale.setBackground(Color.DARK_GRAY);
+		rdbtnFemale.setBounds(235, 193, 109, 23);
+		add(rdbtnFemale);
+		
+		choiceMonth = new Choice();
+		choiceMonth.setForeground(new Color(0, 255, 0));
+		choiceMonth.setBounds(183, 304, 46, 20);
+		add(choiceMonth);
+		String[] months = {"1","2","3","4","5","6","7","8","9","10","11","12"};
+		for(int i=0; i<12; i++){
+			choiceMonth.add(months[i]);
+		}
+		
+		choiceDay = new Choice();
+		choiceDay.setBounds(276, 304, 39, 20);
+		add(choiceDay);
+		String[] days = {"1","2","3","4","5","6","7","8","9","10","11","12", "13", "14",
+				"15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
+				"25", "26", "27", "28", "29", "30", "31"};
+		for (int i=0; i<31; i++){
+		choiceDay.add(days[i]);
+		}
+
+		
+		JLabel lblMm = new JLabel("month");
+		lblMm.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblMm.setForeground(new Color(0, 255, 0));
+		lblMm.setBounds(140, 310, 46, 14);
+		add(lblMm);
+		
+		JLabel lblDd = new JLabel("day");
+		lblDd.setForeground(Color.GREEN);
+		lblDd.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblDd.setBounds(251, 310, 46, 14);
+		add(lblDd);
+		
+		JLabel lblYear = new JLabel("year");
+		lblYear.setForeground(Color.GREEN);
+		lblYear.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblYear.setBounds(168, 339, 46, 14);
+		add(lblYear);
+		
+		textFieldYear= new JTextField();
+		textFieldYear.setBounds(201, 333, 74, 20);
+		add(textFieldYear);
+		textFieldYear.setColumns(10);
+		
 
 	}
 
@@ -174,7 +228,8 @@ public class patientPanel extends JPanel {
 	/* NEED TO FIX TO IDENTIFY IF A CORRECT GENDER WAS ENTERED */
 
 	public String getGender() {
-		return textFieldGender.getText();
+		if (rdbtnMale.isSelected())return "MALE";
+		else return "FEMALE";
 	}
 
 	public String getCity() {
@@ -187,7 +242,8 @@ public class patientPanel extends JPanel {
 
 	// NEED TO FIX TO IDENTIFY IF A CORRECT DATE WAS ENTERED
 	public String getDate() {
-		return textFieldDate.getText();
+		return (choiceMonth.getSelectedItem() +
+				choiceDay.getSelectedItem() + textFieldYear.getText());
 	}
 
 	/*
@@ -197,13 +253,17 @@ public class patientPanel extends JPanel {
 		patientPanel prompt = new patientPanel();
 
 		try {
-			JOptionPane.showConfirmDialog(null, prompt);
-
+			String[] options = { "ENTER", "CANCEL" };
+			int promptSelect = JOptionPane.showOptionDialog(null, prompt,
+					"VIRUS", JOptionPane.OK_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, options, "ENTER");
+			if (promptSelect == JOptionPane.OK_OPTION){
 			return (prompt.getFirst() + "/" + prompt.getMiddle() + "/"
 					+ prompt.getLast() + "/" + prompt.getSsn() + "/"
 					+ prompt.getAge() + "/" + prompt.getGender() + "/"
 					+ prompt.getCity() + "/" + prompt.getState() + "/"
 					+ prompt.getDate() + "/");
+			} else return "NULL";
 		} catch (NumberFormatException nFE) {
 			// Display error message saying something went terribly wrong!!
 			JOptionPane

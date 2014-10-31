@@ -6,15 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JFileChooser;
-
 import java.awt.BorderLayout;
-
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
-import controller.patientPanel;
+import controller.*;
 
 import java.awt.TextArea;
 import java.awt.Color;
@@ -96,7 +94,7 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					// getFileName() defined below.
-					String fileName = getFileName(frame);
+					String fileName = fileManipulator.getFileName(frame);
 					if (fileName != null) {
 
 					}

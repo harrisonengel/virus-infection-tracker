@@ -1,15 +1,21 @@
 package controller;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Component;
+
 import javax.swing.JTextField;
+
 import java.util.InputMismatchException;
+
 import javax.swing.JRadioButton;
+
 import java.awt.Choice;
 import java.awt.Label;
 
@@ -142,6 +148,7 @@ public class patientPanel extends JPanel {
 		rdbtnMale.setBackground(Color.DARK_GRAY);
 		rdbtnMale.setBounds(140, 193, 74, 23);
 		add(rdbtnMale);
+		rdbtnMale.setSelected(true);
 		
 		JRadioButton rdbtnFemale = new JRadioButton("FEMALE");
 		rdbtnFemale.setForeground(Color.GREEN);
@@ -150,19 +157,28 @@ public class patientPanel extends JPanel {
 		rdbtnFemale.setBounds(235, 193, 109, 23);
 		add(rdbtnFemale);
 		
+		
+		ButtonGroup genderButtons = new ButtonGroup();
+		genderButtons.add(rdbtnMale);
+		genderButtons.add(rdbtnFemale);
+		
+		
 		choiceMonth = new Choice();
-		choiceMonth.setForeground(new Color(0, 255, 0));
+		choiceMonth.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		choiceMonth.setForeground(Color.DARK_GRAY);
 		choiceMonth.setBounds(183, 304, 46, 20);
 		add(choiceMonth);
-		String[] months = {"1","2","3","4","5","6","7","8","9","10","11","12"};
+		String[] months = {"01","02","03","04","05","06","07","08","09","10","11","12"};
 		for(int i=0; i<12; i++){
 			choiceMonth.add(months[i]);
 		}
 		
 		choiceDay = new Choice();
+		choiceDay.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		choiceDay.setForeground(Color.DARK_GRAY);
 		choiceDay.setBounds(276, 304, 39, 20);
 		add(choiceDay);
-		String[] days = {"1","2","3","4","5","6","7","8","9","10","11","12", "13", "14",
+		String[] days = {"01","02","03","04","05","06","07","08","09","10","11","12", "13", "14",
 				"15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
 				"25", "26", "27", "28", "29", "30", "31"};
 		for (int i=0; i<31; i++){
@@ -171,24 +187,26 @@ public class patientPanel extends JPanel {
 
 		
 		JLabel lblMm = new JLabel("month");
-		lblMm.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblMm.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		lblMm.setForeground(new Color(0, 255, 0));
 		lblMm.setBounds(140, 310, 46, 14);
 		add(lblMm);
 		
 		JLabel lblDd = new JLabel("day");
 		lblDd.setForeground(Color.GREEN);
-		lblDd.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblDd.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		lblDd.setBounds(251, 310, 46, 14);
 		add(lblDd);
 		
 		JLabel lblYear = new JLabel("year");
 		lblYear.setForeground(Color.GREEN);
-		lblYear.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblYear.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		lblYear.setBounds(168, 339, 46, 14);
 		add(lblYear);
 		
 		textFieldYear= new JTextField();
+		textFieldYear.setFont(new Font("DialogInput", Font.PLAIN, 11));
+		textFieldYear.setForeground(Color.DARK_GRAY);
 		textFieldYear.setBounds(201, 333, 74, 20);
 		add(textFieldYear);
 		textFieldYear.setColumns(10);
@@ -196,20 +214,29 @@ public class patientPanel extends JPanel {
 
 	}
 
-	public String getFirst() {
+	private String getFirst() {
 		return textFieldFirstName.getText();
 	}
 
-	public String getLast() {
+	private String getLast() {
 		return textFieldLastName.getText();
 	}
 
-	public String getMiddle() {
+	private String getMiddle() {
 		return textFieldMiddleName.getText();
 	}
 
-	public String getSsn() {
-		return textFieldSsn.getText();
+	private String getSsn() {
+		String trySsn = textFieldSsn.getText();
+		try{
+			int isSsn = Integer.parseInt(trySsn);
+			if (trySsn.length() != 9) return null;
+			return textFieldSsn.getText();
+		} catch(InputMismatchException ime){
+			JOptionPane.showMessageDialog(null,
+					"Incorect Social Security Number. Make sure it is 9 didgets long and only contains numbers.");
+			return null;
+		}
 	}
 
 	public int getAge() { // returns -1 if entered an impossible age, -2 if
@@ -218,9 +245,14 @@ public class patientPanel extends JPanel {
 			int age = Integer.parseInt(textFieldAge.getText());
 			if (age >= 0 && age < 125)
 				return age;
-			else
+			else{
+				JOptionPane.showMessageDialog(null,
+						"Impossible age for patient (greater than 125 or less than 0)");
 				return -1;
+			}
 		} catch (InputMismatchException ime) {
+			JOptionPane.showMessageDialog(null,
+					"Incorrectly formated entry in AGE field. Make sure AGE is a number and contains no letters.");
 			return -2;
 		}
 	}
@@ -228,8 +260,8 @@ public class patientPanel extends JPanel {
 	/* NEED TO FIX TO IDENTIFY IF A CORRECT GENDER WAS ENTERED */
 
 	public String getGender() {
-		if (rdbtnMale.isSelected())return "MALE";
-		else return "FEMALE";
+		if (rdbtnMale.isSelected())return "M";
+		else return "F";
 	}
 
 	public String getCity() {
@@ -242,8 +274,15 @@ public class patientPanel extends JPanel {
 
 	// NEED TO FIX TO IDENTIFY IF A CORRECT DATE WAS ENTERED
 	public String getDate() {
-		return (choiceMonth.getSelectedItem() +
-				choiceDay.getSelectedItem() + textFieldYear.getText());
+		String tryYear = textFieldYear.getText();
+		try {
+			int year = Integer.parseInt(tryYear);
+			return (choiceMonth.getSelectedItem() + "." +
+					choiceDay.getSelectedItem() + "." + year);
+		} catch (InputMismatchException ime){
+			return null;
+		}
+		
 	}
 
 	/*

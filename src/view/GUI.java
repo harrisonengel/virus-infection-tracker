@@ -4,16 +4,12 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JFileChooser;
-import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-
 import controller.*;
-
 import java.awt.TextArea;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -93,22 +89,19 @@ public class GUI {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					// getFileName() defined below.
 					String fileName = fileManipulator.getFileName(frame);
 					if (fileName != null) {
-
+						fileManipulator.readPatientFile(fileName);
 					}
 					// These catches are for users who either don't select a
 					// file or select a file
 					// that is in the wrong format (not txt, or not a properly
 					// formatted txt.
 				} catch (NullPointerException np) {
-					JOptionPane
-							.showMessageDialog(frame,
+					JOptionPane.showMessageDialog(frame,
 									"Error reading from file. Make sure it exists and is not corrupted!");
 				} catch (NumberFormatException nfp) {
-					JOptionPane
-							.showMessageDialog(frame,
+					JOptionPane.showMessageDialog(frame,
 									"Error reading from file. Make sure it exists and is not corrupted!");
 				}
 			}
@@ -147,8 +140,7 @@ public class GUI {
 					try (FileWriter fw = new FileWriter(fc.getSelectedFile())) {
 
 					} catch (IOException i) {
-						JOptionPane
-								.showMessageDialog(frame,
+						JOptionPane.showMessageDialog(frame,
 										"Error saving file. Make sure you are using a .txt extension!");
 					}
 				}

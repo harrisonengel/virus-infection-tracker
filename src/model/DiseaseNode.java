@@ -23,12 +23,18 @@ public class DiseaseNode {
 		return this.diseasePtr;
 	}
 	
-	public PatientNode getPatientPtr(){
+	
+	public PatientNode getPatientZero(){
 		return this.patientPtr;
 	}
-	
-	public void setPatientPtr(PatientNode p){
-		this.patientPtr = p;
+
+	public void createPatientZero(String patientDataString){
+		PatientNode patientZeroHeader = PatientNode.createPatientZero(patientDataString);
+		PatientNode patientZero = PatientNode.createPatient(patientDataString);
+		patientZeroHeader.setChild(patientZero, false);
+		patientZero.setSibling(patientZeroHeader, true);
+		patientZero.setChild(patientZeroHeader, true);
+		this.patientPtr = patientZero;
 	}
 	public void setDiseasePtr(DiseaseNode d){
 		this.diseasePtr = d;

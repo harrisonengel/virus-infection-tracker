@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 public class PatientNode {
 	private String first, middle, last, ssn, age, gender, city, state, date, depthNumber;
 	private PatientNode siblingPointer, childPointer;
-	private boolean rightThread, leftThread;
+	private boolean rightThread, leftThread, isPatientZero;
 	
 	private PatientNode(){
 	}
@@ -23,8 +23,16 @@ public class PatientNode {
 		newPatient.city = st.nextToken();
 		newPatient.state = st.nextToken();
 		newPatient.date = st.nextToken();
+		newPatient.isPatientZero = false;
 		return newPatient;
 	}
+	
+	public static PatientNode createPatientZero(String patientDataString){
+		PatientNode newPatient = createPatient(patientDataString);
+		newPatient.isPatientZero = true;
+		return newPatient;
+	}
+	
 	
 	public void setSibling(PatientNode sibling, boolean isThread){
 		this.siblingPointer = sibling;
@@ -44,6 +52,21 @@ public class PatientNode {
 	public boolean isSiblingThread(){
 		return rightThread;
 	}
-	public boolean is
+	public boolean isChildThread(){
+		return leftThread;
+	}
+	public boolean isPatientZero(){
+		return isPatientZero;
+	}
 	
+	public PatientNode getIndorderSuccessor(){
+		PatientNode cur = this.getSibling();
+		if(this.rightThread) return cur;
+		
+		while(!cur.leftThread){
+			cur = cur.getChild();
+		}
+		return cur;
+	}
+	 
 }

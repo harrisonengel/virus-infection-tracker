@@ -13,7 +13,7 @@ public abstract class DiseaseManipulator {
 		while(curLine != null){
 			if (curLine.contains("*****")){
 				curLine = er.readLine();
-				addDiseaseNode(firstNode, curLine);;
+				addDiseaseNode(firstNode, curLine);
 				continue;
 			} else{
 				
@@ -37,8 +37,23 @@ public abstract class DiseaseManipulator {
 	private void addSibling(DiseaseNode disease, PatientNode prevSibling, String newPatient){
 		disease.incrementPatients();
 		PatientNode patient = PatientNode.createPatient(newPatient);
-		patient.setSibling(prevSibling.getSibling(), );
+		patient.setSibling(prevSibling.getSibling(), prevSibling.isSiblingThread());
 		prevSibling.setSibling(patient, false);
-		patient.set
 	}
+	
+	private void addChild(DiseaseNode disease, PatientNode parent, String newPatient){
+		disease.incrementPatients();
+		PatientNode patient = PatientNode.createPatient(newPatient);
+		
+		if (parent.isChildThread()) {
+			patient.setChild(parent.getChild(), true);
+			parent.setChild(patient, false);
+			patient.setSibling(parent, true);
+		}
+		else{
+			this.addSibling(disease, parent.getChild(), newPatient);
+		}
+	}
+	
 }
+

@@ -1,3 +1,12 @@
+/*******************************************************************/
+/*   Program Name:     Lab 2    VIRUS                              */
+/*                                                                 */
+/*   Student Name:     Harrison Engel                              */
+/*   Semester:         Fall 2014                                   */
+/*   Class-Section:    COSC 20803-035                              */
+/*   Instructor:       Dr. Comer                                   */
+/*******************************************************************/
+
 package view;
 
 import java.awt.EventQueue;

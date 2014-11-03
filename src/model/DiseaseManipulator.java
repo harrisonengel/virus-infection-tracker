@@ -1,59 +1,66 @@
+/*******************************************************************/
+/*   Program Name:     Lab 2    VIRUS                              */
+/*                                                                 */
+/*   Student Name:     Harrison Engel                              */
+/*   Semester:         Fall 2014                                   */
+/*   Class-Section:    COSC 20803-035                              */
+/*   Instructor:       Dr. Comer                                   */
+/*******************************************************************/
+
 package model;
 
 import controller.EasyReader;
 
 public abstract class DiseaseManipulator {
 	
-	public DiseaseNode createDiseaseForest(EasyReader er){
+	public static DiseaseNode createDiseaseForest(EasyReader er){
 		
 		String curLine = er.readLine();
-		DiseaseNode firstNode = DiseaseNode.createDiseaseNode(curLine, null, null);
-		
-		curLine = er.readLine();
+		DiseaseNode diseaseHead = DiseaseNode.createDiseaseNode(curLine, null, null);
+		DiseaseNode curDisease = diseaseHead;
+		PatientNode prevPatient = null;
 		while(curLine != null){
+			curLine = er.readLine();
 			if (curLine.contains("*****")){
 				curLine = er.readLine();
-				addDiseaseNode(firstNode, curLine);
+				curDisease = DiseaseNode.createDiseaseNode(curLine, null, null);
+				addDiseaseNode(diseaseHead, curDisease);
 				continue;
 			} else{
-				
-				
-				
+				PatientNode temp = PatientNode.createPatient(curLine);
+				if (temp.getDepth() == 1) {
+					curDisease.addPatientZero(temp);
+					System.out.println(curDisease.getName() + " " + temp.toString());
+				} else if (temp.getDepth() > prevPatient.getDepth()){
+					prevPatient.addChild(curDisease, temp);
+					System.out.println(curDisease.getName() + " " + temp.toString());
+				} else if (temp.getDepth() == prevPatient.getDepth()){
+					prevPatient.addSibling(curDisease,  temp);
+					System.out.println(curDisease.getName() + " " + temp.toString());
+				} else {
+					while (temp.getDepth() != prevPatient.getDepth()){
+						prevPatient = prevPatient.getSibling();
+					}
+					prevPatient.addSibling(curDisease, temp);
+					System.out.println(curDisease.getName() + " " + temp.toString());
+				}
+				prevPatient = temp;
 			}
 		}
 		
-		return firstNode;
+		return diseaseHead;
 	}
 	
-	private void addDiseaseNode(DiseaseNode head, String newDisease){
+	private static void addDiseaseNode(DiseaseNode head, DiseaseNode newDisease){
 		DiseaseNode dPtr = head;
 		 while(dPtr.getDiseasePtr() != null){
 			dPtr = dPtr.getDiseasePtr();
 		}
-		 DiseaseNode newNode = DiseaseNode.createDiseaseNode(newDisease, null, null);
-		 dPtr.setDiseasePtr(newNode);
+		 dPtr.setDiseasePtr(newDisease);
 	}
 	
-	private void addSibling(DiseaseNode disease, PatientNode prevSibling, String newPatient){
-		disease.incrementPatients();
-		PatientNode patient = PatientNode.createPatient(newPatient);
-		patient.setSibling(prevSibling.getSibling(), prevSibling.isSiblingThread());
-		prevSibling.setSibling(patient, false);
-	}
 	
-	private void addChild(DiseaseNode disease, PatientNode parent, String newPatient){
-		disease.incrementPatients();
-		PatientNode patient = PatientNode.createPatient(newPatient);
-		
-		if (parent.isChildThread()) {
-			patient.setChild(parent.getChild(), true);
-			parent.setChild(patient, false);
-			patient.setSibling(parent, true);
-		}
-		else{
-			this.addSibling(disease, parent.getChild(), newPatient);
-		}
-	}
+	
 	
 }
 

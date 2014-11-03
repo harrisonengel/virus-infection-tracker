@@ -1,7 +1,19 @@
+/*******************************************************************/
+/*   Program Name:     Lab 2    VIRUS                              */
+/*                                                                 */
+/*   Student Name:     Harrison Engel                              */
+/*   Semester:         Fall 2014                                   */
+/*   Class-Section:    COSC 20803-035                              */
+/*   Instructor:       Dr. Comer                                   */
+/*******************************************************************/
+
 package controller;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+
+import model.DiseaseManipulator;
+import model.DiseaseNode;
 
 public abstract class fileManipulator {
 
@@ -20,13 +32,15 @@ public abstract class fileManipulator {
 		}
 	}
 	
-	//Still needs to be implemented
-	public static EasyReader readPatientFile(String fileName){
+	// TODO Still needs to be implemented
+	public static void readPatientFile(String fileName){
 		EasyReader inFile = new EasyReader(fileName);
 		if (inFile.bad()) {
 			System.err.println("Can't open " + fileName);
-			return null;
-		} else return inFile;
+			return;
+		} else {
+			DiseaseNode test = DiseaseManipulator.createDiseaseForest(inFile);
+		}
 		
 	}
 	

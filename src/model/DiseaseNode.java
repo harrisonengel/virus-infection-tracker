@@ -1,3 +1,12 @@
+/*******************************************************************/
+/*   Program Name:     Lab 2    VIRUS                              */
+/*                                                                 */
+/*   Student Name:     Harrison Engel                              */
+/*   Semester:         Fall 2014                                   */
+/*   Class-Section:    COSC 20803-035                              */
+/*   Instructor:       Dr. Comer                                   */
+/*******************************************************************/
+
 package model;
 
 public class DiseaseNode {
@@ -19,6 +28,14 @@ public class DiseaseNode {
 		return newNode;
 	}
 	
+	public void addDiseaseNode(DiseaseNode newDisease){
+		DiseaseNode dPtr = this;
+		 while(dPtr.getDiseasePtr() != null){
+			dPtr = dPtr.getDiseasePtr();
+		}
+		 dPtr.setDiseasePtr(newDisease);
+	}
+	
 	public DiseaseNode getDiseasePtr(){
 		return this.diseasePtr;
 	}
@@ -28,12 +45,8 @@ public class DiseaseNode {
 		return this.patientPtr;
 	}
 
-	public void createPatientZero(String patientDataString){
-		PatientNode patientZeroHeader = PatientNode.createPatientZero(patientDataString);
-		PatientNode patientZero = PatientNode.createPatient(patientDataString);
-		patientZeroHeader.setChild(patientZero, false);
-		patientZero.setSibling(patientZeroHeader, true);
-		patientZero.setChild(patientZeroHeader, true);
+	public void addPatientZero(PatientNode patient){
+		PatientNode patientZero = PatientNode.makePatientZero(patient);
 		this.patientPtr = patientZero;
 	}
 	public void setDiseasePtr(DiseaseNode d){
@@ -48,5 +61,8 @@ public class DiseaseNode {
 	}
 	public String getName(){
 		return this.diseaseName;
+	}
+	public int getNumPatients(){
+		return numPatients;
 	}
 }

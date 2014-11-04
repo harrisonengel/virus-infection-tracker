@@ -59,7 +59,7 @@ public class DiseaseNode {
 	public void decrementPatients(){
 		this.numPatients--;
 	}
-	public String getName(){
+	public String toString(){
 		return this.diseaseName;
 	}
 	public int getNumPatients(){

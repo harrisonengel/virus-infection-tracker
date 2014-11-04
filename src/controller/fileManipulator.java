@@ -19,9 +19,9 @@ public abstract class fileManipulator {
 
 	// Uses a JFileCooser to get a path, which can then be passed into an
 	// EasyReader object.
-	public static String getFileName(JFrame jf) {
+	public static String getFileName() {
 		JFileChooser fc = new JFileChooser();
-		int returnVal = fc.showOpenDialog(jf);
+		int returnVal = fc.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			// This message to the user will be replaced
 			// by an error message immediately afterwards
@@ -33,15 +33,14 @@ public abstract class fileManipulator {
 	}
 	
 	// TODO Still needs to be implemented
-	public static void readPatientFile(String fileName){
+	public static EasyReader getEasyReader(String fileName){
 		EasyReader inFile = new EasyReader(fileName);
 		if (inFile.bad()) {
 			System.err.println("Can't open " + fileName);
-			return;
+			return null;
 		} else {
-			DiseaseNode test = DiseaseManipulator.createDiseaseForest(inFile);
+			return inFile;
 		}
-		
 	}
 	
 	//Still needs to be implemented

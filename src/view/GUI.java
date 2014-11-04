@@ -18,7 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
 import controller.*;
+
 import java.awt.TextArea;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -26,121 +28,113 @@ import java.awt.event.ActionEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class GUI {
+import javax.swing.JTree;
+import javax.swing.JScrollPane;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
-	private JFrame frame;
+import java.awt.Font;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GUI window = new GUI();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+import javax.swing.JTextArea;
+
+public class GUI extends JFrame {
+
+	public Mediator controller;
+	public JTree tree;	
+	private JPanel panel_header, panel_buttons, panel_display;
+	private JLabel lblTitle, lblVirusImageL, lblVirusImageR;
+	public JButton btnAddFile, btnAddPatient,  btnRemovePatient, btnSaveTrees, btnPrintPreorder;
+	private JTextArea textArea;
+	private JScrollPane scrollPane;
+	
+	public GUI() {
+		getContentPane().setLayout(null);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setSize(1000, 700);
+		
+		this.getContentPane().setBackground(Color.DARK_GRAY);
+		this.setBounds(100, 100, 700, 576);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.getContentPane().setLayout(null);
+		
+		tree = new JTree();
+		tree.setForeground(Color.GREEN);
+		tree.setFont(new Font("DialogInput", Font.PLAIN, 14));
+		tree.setBackground(Color.LIGHT_GRAY);
+		tree.setShowsRootHandles(true);
+		tree.setCellRenderer(new virusTreeCell());
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		tree.addTreeSelectionListener(new TreeSelectionListener(){
+			public void valueChanged(TreeSelectionEvent e) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+				if (node == null) return;
 			}
 		});
-	}
 
-	/**
-	 * Create the application.
-	 */
-	public GUI() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.getContentPane().setBackground(Color.DARK_GRAY);
-		frame.setBounds(100, 100, 700, 550);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-
-
-		JPanel panel_header = new JPanel();
+		panel_header = new JPanel();
 		panel_header.setBackground(Color.GRAY);
 		panel_header.setBounds(0, 0, 684, 156);
-		frame.getContentPane().add(panel_header);
+		this.getContentPane().add(panel_header);
 		panel_header.setLayout(null);
 
-		JLabel lblTitle = new JLabel("");
+		lblTitle = new JLabel();
 		lblTitle.setBounds(215, -38, 259, 194);
 		lblTitle.setIcon(new ImageIcon(GUI.class
 				.getResource("/view/virus 2.jpg")));
 		panel_header.add(lblTitle);
 
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon(GUI.class
+		lblVirusImageL = new JLabel();
+		lblVirusImageL.setIcon(new ImageIcon(GUI.class
 				.getResource("/view/virus3.jpg")));
-		lblNewLabel.setBounds(10, 0, 205, 156);
-		panel_header.add(lblNewLabel);
+		lblVirusImageL.setBounds(10, 0, 205, 156);
+		panel_header.add(lblVirusImageL);
 
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		lblNewLabel_1.setIcon(new ImageIcon(GUI.class
+		lblVirusImageR = new JLabel("New label");
+		lblVirusImageR.setIcon(new ImageIcon(GUI.class
 				.getResource("/view/virus3.jpg")));
-		lblNewLabel_1.setBounds(474, 0, 200, 156);
-		panel_header.add(lblNewLabel_1);
+		lblVirusImageR.setBounds(474, 0, 200, 156);
+		panel_header.add(lblVirusImageR);
 
-		JPanel panel_buttons = new JPanel();
+		panel_buttons = new JPanel();
 		panel_buttons.setBackground(Color.DARK_GRAY);
-		panel_buttons.setBounds(10, 167, 209, 345);
-		frame.getContentPane().add(panel_buttons);
+		panel_buttons.setBounds(10, 167, 209, 360);
+		this.getContentPane().add(panel_buttons);
 		panel_buttons.setLayout(null);
 
-		JButton btnAdd = new JButton("ADD DISEASE TREES");
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String fileName = fileManipulator.getFileName(frame);
-					if (fileName != null) {
-						fileManipulator.readPatientFile(fileName);
-					}
-					// These catches are for users who either don't select a
-					// file or select a file
-					// that is in the wrong format (not txt, or not a properly
-					// formatted txt.
-				} catch (NullPointerException np) {
-					JOptionPane.showMessageDialog(frame,
-									"Error reading from file. Make sure it exists and is not corrupted!");
-				} catch (NumberFormatException nfp) {
-					JOptionPane.showMessageDialog(frame,
-									"Error reading from file. Make sure it exists and is not corrupted!");
-				}
-			}
-		});
-		btnAdd.setBackground(new Color(0, 255, 0));
-		btnAdd.setBounds(10, 11, 189, 38);
-		panel_buttons.add(btnAdd);
+		btnAddFile = new JButton("ADD DISEASE TREES");
+		btnAddFile.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnAddFile.setBackground(new Color(0, 255, 0));
+		btnAddFile.setBounds(10, 11, 189, 38);
+		panel_buttons.add(btnAddFile);
 
-		JButton btnNewButton = new JButton("ADD PATIENT");
-		btnNewButton.addActionListener(new ActionListener() {
+		btnAddPatient = new JButton("ADD PATIENT");
+		btnAddPatient.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnAddPatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String patientData = patientPanel.patientPrompt();
 			}
 		});
-		btnNewButton.setBackground(new Color(0, 255, 0));
-		btnNewButton.setBounds(10, 63, 189, 38);
-		panel_buttons.add(btnNewButton);
+		btnAddPatient.setBackground(new Color(0, 255, 0));
+		btnAddPatient.setBounds(10, 63, 189, 38);
+		panel_buttons.add(btnAddPatient);
 
-		JButton btnNewButton_1 = new JButton("REMOVE PATIENT");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		btnRemovePatient = new JButton("REMOVE PATIENT");
+		btnRemovePatient.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnRemovePatient.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String patientData = patientPanel.patientPrompt();
 			}
 		});
-		btnNewButton_1.setBackground(new Color(0, 255, 0));
-		btnNewButton_1.setBounds(10, 117, 189, 38);
-		panel_buttons.add(btnNewButton_1);
+		btnRemovePatient.setBackground(new Color(0, 255, 0));
+		btnRemovePatient.setBounds(10, 117, 189, 38);
+		panel_buttons.add(btnRemovePatient);
 
-		JButton btnNewButton_2 = new JButton("SAVE TREES");
-		btnNewButton_2.addActionListener(new ActionListener() {
+		btnSaveTrees = new JButton("SAVE TREES");
+		btnSaveTrees.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		/*btnSaveTrees.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				int returnVal = fc.showSaveDialog(frame);
@@ -152,26 +146,44 @@ public class GUI {
 						JOptionPane.showMessageDialog(frame,
 										"Error saving file. Make sure you are using a .txt extension!");
 					}
-				}
+				} 
+				
 			}
-		});
-		btnNewButton_2.setBackground(new Color(0, 255, 0));
-		btnNewButton_2.setBounds(10, 172, 189, 38);
-		panel_buttons.add(btnNewButton_2);
+		});*/
+		btnSaveTrees.setBackground(new Color(0, 255, 0));
+		btnSaveTrees.setBounds(10, 172, 189, 38);
+		panel_buttons.add(btnSaveTrees);
+		
+		btnPrintPreorder = new JButton("PRINT PREORDER");
+		btnPrintPreorder.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnPrintPreorder.setBackground(Color.GREEN);
+		btnPrintPreorder.setBounds(10, 221, 189, 38);
+		panel_buttons.add(btnPrintPreorder);
+		
+		textArea = new JTextArea();
+		textArea.setForeground(Color.GREEN);
+		textArea.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		textArea.setBackground(Color.LIGHT_GRAY);
+		textArea.setBounds(10, 270, 189, 79);
+		panel_buttons.add(textArea);
 
-		TextArea textAreaMessages = new TextArea();
-		textAreaMessages.setForeground(new Color(255, 0, 0));
-		textAreaMessages.setBackground(new Color(192, 192, 192));
-		textAreaMessages.setBounds(0, 224, 209, 111);
-		panel_buttons.add(textAreaMessages);
-
-		JPanel panel_display = new JPanel();
+		panel_display = new JPanel();
 		panel_display.setBackground(new Color(192, 192, 192));
-		panel_display.setBounds(229, 167, 445, 334);
-		frame.getContentPane().add(panel_display);
-
+		panel_display.setBounds(229, 167, 445, 360);
+		this.getContentPane().add(panel_display);
+		panel_display.setLayout(null);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 445, 322);
+		panel_display.add(scrollPane);
+		
+		scrollPane.setColumnHeaderView(tree);
 	}
 
-	
-
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	public void initialize() {
+		this.setVisible(true);
+	}
 }

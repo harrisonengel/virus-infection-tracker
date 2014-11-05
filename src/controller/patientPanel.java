@@ -41,6 +41,9 @@ public class patientPanel extends JPanel {
 	private JRadioButton rdbtnMale;
 	private Choice choiceMonth;
 	private Choice choiceDay;
+	private JTextField textFieldDisease;
+	private JTextField textFieldExposee;
+	private JTextField textFieldInfector;
 
 	/**
 	 * Create the panel.
@@ -48,7 +51,7 @@ public class patientPanel extends JPanel {
 	public patientPanel() {
 
 		Dimension minimumSize = new Dimension(350, 400);
-		setPreferredSize(new Dimension(350, 400));
+		setPreferredSize(new Dimension(350, 527));
 		setMinimumSize(minimumSize);
 
 		setBackground(Color.DARK_GRAY);
@@ -148,7 +151,7 @@ public class patientPanel extends JPanel {
 		lblInputPatientInfo = new JLabel("INPUT PATIENT INFO");
 		lblInputPatientInfo.setForeground(Color.GREEN);
 		lblInputPatientInfo.setFont(new Font("DialogInput", Font.BOLD, 20));
-		lblInputPatientInfo.setBounds(54, 364, 261, 25);
+		lblInputPatientInfo.setBounds(54, 491, 261, 25);
 		add(lblInputPatientInfo);
 		
 		rdbtnMale = new JRadioButton("MALE");
@@ -220,6 +223,39 @@ public class patientPanel extends JPanel {
 		add(textFieldYear);
 		textFieldYear.setColumns(10);
 		
+		JLabel lblDisease = new JLabel("Disease");
+		lblDisease.setForeground(Color.GREEN);
+		lblDisease.setFont(new Font("DialogInput", Font.BOLD, 14));
+		lblDisease.setBounds(10, 364, 100, 25);
+		add(lblDisease);
+		
+		textFieldDisease = new JTextField();
+		textFieldDisease.setColumns(10);
+		textFieldDisease.setBounds(140, 364, 175, 25);
+		add(textFieldDisease);
+		
+		JLabel lblExposeeNumber = new JLabel("Exposee Number");
+		lblExposeeNumber.setForeground(Color.GREEN);
+		lblExposeeNumber.setFont(new Font("DialogInput", Font.BOLD, 14));
+		lblExposeeNumber.setBounds(10, 408, 118, 25);
+		add(lblExposeeNumber);
+		
+		textFieldExposee = new JTextField();
+		textFieldExposee.setColumns(10);
+		textFieldExposee.setBounds(140, 408, 175, 25);
+		add(textFieldExposee);
+		
+		JLabel lblInfector = new JLabel("Infector");
+		lblInfector.setForeground(Color.GREEN);
+		lblInfector.setFont(new Font("DialogInput", Font.BOLD, 14));
+		lblInfector.setBounds(10, 455, 118, 25);
+		add(lblInfector);
+		
+		textFieldInfector = new JTextField();
+		textFieldInfector.setColumns(10);
+		textFieldInfector.setBounds(140, 455, 175, 25);
+		add(textFieldInfector);
+		
 
 	}
 
@@ -280,6 +316,18 @@ public class patientPanel extends JPanel {
 	public String getState() {
 		return textFieldState.getText();
 	}
+	
+	public String getDisease(){
+		return textFieldDisease.getText();
+	}
+	
+	public String getExposeeNumber(){
+		return textFieldExposee.getText();
+	}
+	
+	public String getInfector(){
+		return textFieldInfector.getText();
+	}
 
 	// NEED TO FIX TO IDENTIFY IF A CORRECT DATE WAS ENTERED
 	public String getDate() {
@@ -297,28 +345,35 @@ public class patientPanel extends JPanel {
 	/*
 	 * Bug: Throws error message on X.
 	 */
-	public static String patientPrompt() {
+	//TODO Implement custom error for incorrect input or failures
+	public static String[] patientPrompt() {
 		patientPanel prompt = new patientPanel();
-
+		String[] toReturn = null;
 		try {
 			String[] options = { "ENTER", "CANCEL" };
 			int promptSelect = JOptionPane.showOptionDialog(null, prompt,
 					"VIRUS", JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.PLAIN_MESSAGE, null, options, "ENTER");
 			if (promptSelect == JOptionPane.OK_OPTION){
-			return (prompt.getFirst() + "/" + prompt.getMiddle() + "/"
-					+ prompt.getLast() + "/" + prompt.getSsn() + "/"
-					+ prompt.getAge() + "/" + prompt.getGender() + "/"
-					+ prompt.getCity() + "/" + prompt.getState() + "/"
-					+ prompt.getDate() + "/");
-			} else return "NULL";
+				String patientData = 0 + "/" + prompt.getFirst() + "/" + prompt.getMiddle() + "/"
+						+ prompt.getLast() + "/" + prompt.getSsn() + "/"
+						+ prompt.getAge() + "/" + prompt.getGender() + "/"
+						+ prompt.getCity() + "/" + prompt.getState() + "/"
+						+ prompt.getDate() + "/"; 
+				String disease = prompt.getDisease();
+				String exposeeNumber = prompt.getExposeeNumber();
+				String infector = prompt.getInfector();
+				toReturn = new String[]{patientData, disease, infector, exposeeNumber};
+				
+			}
+			return toReturn;
 		} catch (NumberFormatException nFE) {
 			// Display error message saying something went terribly wrong!!
 			JOptionPane
 					.showMessageDialog(
 							null,
 							"Error, incorrect input. Make sure your age is an integer number, not a spelled out number (like \"two\").");
-			return "ERROR";
+			return null;
 		}
 
 	}

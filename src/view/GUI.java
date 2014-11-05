@@ -9,31 +9,18 @@
 
 package view;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
-
 import controller.*;
 
-import java.awt.TextArea;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import javax.swing.JTree;
 import javax.swing.JScrollPane;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.Font;
@@ -67,12 +54,12 @@ public class GUI extends JFrame {
 		tree.setShowsRootHandles(true);
 		tree.setCellRenderer(new virusTreeCell());
 		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		tree.addTreeSelectionListener(new TreeSelectionListener(){
+		/*tree.addTreeSelectionListener(new TreeSelectionListener(){
 			public void valueChanged(TreeSelectionEvent e) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 				if (node == null) return;
 			}
-		});
+		});*/
 
 		panel_header = new JPanel();
 		panel_header.setBackground(Color.GRAY);
@@ -112,22 +99,12 @@ public class GUI extends JFrame {
 
 		btnAddPatient = new JButton("ADD PATIENT");
 		btnAddPatient.setFont(new Font("DialogInput", Font.PLAIN, 12));
-		btnAddPatient.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String patientData = patientPanel.patientPrompt();
-			}
-		});
 		btnAddPatient.setBackground(new Color(0, 255, 0));
 		btnAddPatient.setBounds(10, 63, 189, 38);
 		panel_buttons.add(btnAddPatient);
 
 		btnRemovePatient = new JButton("REMOVE PATIENT");
 		btnRemovePatient.setFont(new Font("DialogInput", Font.PLAIN, 12));
-		btnRemovePatient.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String patientData = patientPanel.patientPrompt();
-			}
-		});
 		btnRemovePatient.setBackground(new Color(0, 255, 0));
 		btnRemovePatient.setBounds(10, 117, 189, 38);
 		panel_buttons.add(btnRemovePatient);
@@ -185,5 +162,10 @@ public class GUI extends JFrame {
 	 */
 	public void initialize() {
 		this.setVisible(true);
+	}
+	
+	public void setController(Mediator controller){
+		this.controller = controller;
+		this.tree.setModel(controller.getTreeModel());
 	}
 }

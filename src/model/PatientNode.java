@@ -11,6 +11,8 @@ package model;
 
 import java.util.StringTokenizer;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 public class PatientNode {
 	private String first, middle, last, ssn, age, gender, city, state, date;
 	private int depthNumber;
@@ -53,11 +55,13 @@ public class PatientNode {
 	}
 	
 	//Returns the functional Patient Node for patientZero
-	public static PatientNode makePatientZero(PatientNode patientZero){
-		patientZero.isPatientZero= true;
-		patientZero.setChild(patientZero, true);
-		patientZero.setSibling(patientZero, true);
-		return patientZero;
+	public void makePatientZero(){
+		PatientNode patientZeroHeader;
+		//patientZeroHeader = (PatientNode) patientZero.clone();
+		this.isPatientZero= true;
+		//patientZero.setChild(patientZeroHeader, true);
+		//patientZero.setSibling(patientZeroHeader, true);
+		
 	}
 
 	public void setSibling(PatientNode sibling, boolean isThread) {
@@ -104,17 +108,40 @@ public class PatientNode {
 		}
 		return cur;
 	}
+	
+	public PatientNode getPreorderSuccessor(){
+		if (!this.isChildThread())
+			return this.getChild();
+		else {
+			PatientNode findNext = this;
+			while(findNext.isSiblingThread()){
+				findNext = findNext.getSibling();
+				if (findNext.isPatientZero()) return findNext;
+			}
+			return findNext.getSibling();
+		}
+	}
 
 	public String toString() {
-		return ( this.depthNumber + "/" + this.first + "/"
-				+ this.middle + "/" + this.last + "/" + this.ssn + "/"
-				+ this.age + "/" + this.gender + "/" + this.city + "/"
-				+ this.state + "/" + this.date + "/");
+		return ( this.first + " " + this.last);
 	}
 	
 	// TODO create a real implementation of copy() with slightly less overhead.
-	public PatientNode copy(){
-		return createPatient(this.toString());
+	@Override
+	public PatientNode clone(){
+		PatientNode newClone = new PatientNode();
+		newClone.depthNumber = this.depthNumber;
+		newClone.first = this.first;
+		newClone.middle = this.middle;
+		newClone.last = this.last;
+		newClone.ssn = this.ssn;
+		newClone.age = this.age;
+		newClone.gender= this.gender;
+		newClone.city = this.city;
+		newClone.state = this.state;
+		newClone.date = this.date;
+		
+		return newClone;
 	}
 
 }

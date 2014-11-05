@@ -46,8 +46,14 @@ public class DiseaseNode {
 	}
 
 	public void addPatientZero(PatientNode patient){
-		PatientNode patientZero = PatientNode.makePatientZero(patient);
-		this.patientPtr = patientZero;
+		PatientNode patientZeroHeader = patient.clone();
+		patientZeroHeader.makePatientZero();
+		
+		patientZeroHeader.setChild(patient, false);
+		
+		patient.setChild(patientZeroHeader, true);
+		patient.setSibling(patientZeroHeader, true);
+		this.patientPtr = patientZeroHeader;
 	}
 	public void setDiseasePtr(DiseaseNode d){
 		this.diseasePtr = d;

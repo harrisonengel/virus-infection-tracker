@@ -10,10 +10,7 @@
 package controller;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 
-import model.DiseaseManipulator;
-import model.DiseaseNode;
 
 public abstract class fileManipulator {
 
@@ -29,17 +26,6 @@ public abstract class fileManipulator {
 			return fc.getSelectedFile().getPath();
 		} else {
 			return null;
-		}
-	}
-	
-	// TODO Still needs to be implemented
-	public static EasyReader getEasyReader(String fileName){
-		EasyReader inFile = new EasyReader(fileName);
-		if (inFile.bad()) {
-			System.err.println("Can't open " + fileName);
-			return null;
-		} else {
-			return inFile;
 		}
 	}
 	

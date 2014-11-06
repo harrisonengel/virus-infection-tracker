@@ -7,7 +7,8 @@
 /*   Instructor:       Dr. Comer                                   */
 /*******************************************************************/
 
-package model;
+package nodes;
+
 
 public class DiseaseNode {
 	private String diseaseName;

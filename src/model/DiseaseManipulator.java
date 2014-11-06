@@ -15,7 +15,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JTextArea;
+import nodes.DiseaseNode;
+import nodes.PatientNode;
 import controller.Mediator;
+
 import java.util.Stack;
 
 public class DiseaseManipulator {
@@ -215,6 +218,47 @@ public class DiseaseManipulator {
 		}
 		printTo.append("\n");
 		
+	}
+	
+	private void printPatientData(PatientNode patient, JTextArea printTo){
+		printTo.append("********************" + patient.first + " " + patient.middle + " " + patient.last + "********************\n" );
+		printTo.append("SSN: " + patient.ssn + "\n");
+		printTo.append("AGE: " + patient.age + "\n");
+		printTo.append("GENDER: " + patient.gender + "\n");
+		printTo.append("CITY: "+ patient.city + "\n");
+		printTo.append("STATE: "+ patient.state + "\n");
+		printTo.append("INFECTED ON: " + patient.date + "\n");
+		printTo.append("\n");
+	}
+	
+	public void printData(String patientString, String diseaseString, JTextArea printTo){
+		DiseaseNode disease = this.findDisease(diseaseString);
+		PatientNode curPatient = this.findPatient(patientString, disease);
+		
+		printTo.append("********************INFECTOR***********************\n");
+		printPatientData(curPatient, printTo);
+		if(!curPatient.isChildThread()){
+			printTo.append("********************INFECTED***********************\n");
+			curPatient = curPatient.getChild();
+			while(!curPatient.isSiblingThread()){
+				printPatientData(curPatient, printTo);
+				curPatient = curPatient.getSibling();
+			}
+			printPatientData(curPatient, printTo);
+		}	
+	}
+	
+	public void getAllInfectedBy(String infectorString, String diseaseString, JTextArea printTo){
+		
+		PatientNode infector = this.findPatient(infectorString, this.findDisease(diseaseString));
+		infector.makePatientZero();
+		if(infector.isChildThread()) return; //TODO set warning error for this if statement.
+		PatientNode curPatient = infector.getChild();
+		do{
+			printTo.append(curPatient.toString() + "\n" );
+		} while((curPatient = curPatient.getPreorderSuccessor()) != infector);
+		
+		infector.makeNormalPatient();
 	}
 	
 }

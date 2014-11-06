@@ -7,15 +7,15 @@
 /*   Instructor:       Dr. Comer                                   */
 /*******************************************************************/
 
-package model;
+package nodes;
 
 import java.util.StringTokenizer;
 
 public class PatientNode {
-	private String first, middle, last, ssn, age, gender, city, state, date;
-	private int depthNumber;
-	private PatientNode siblingPointer, childPointer;
-	private boolean rightThread, leftThread, isPatientZero;
+	public String first, middle, last, ssn, age, gender, city, state, date;
+	public int depthNumber;
+	public PatientNode siblingPointer, childPointer;
+	public boolean rightThread, leftThread, isPatientZero;
 
 	private PatientNode() {
 	}
@@ -56,6 +56,10 @@ public class PatientNode {
 	public void makePatientZero(){
 		this.isPatientZero= true;
 		
+	}
+	
+	public void makeNormalPatient(){
+		this.isPatientZero = false;
 	}
 
 	public void setSibling(PatientNode sibling, boolean isThread) {

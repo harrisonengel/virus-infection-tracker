@@ -1,7 +1,6 @@
-package controller;
+package panels;
 
 import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JLabel;
@@ -10,18 +9,17 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 
-public class DeletePatientPanel extends JPanel {
+public class GetPathPanel extends JPanel {
 	private JTextField textFieldDisease;
 	private JTextField textFieldName;
-
-
-	public DeletePatientPanel() {
+	
+	public GetPathPanel() {
 		setPreferredSize(new Dimension(425, 150));
 		setBackground(Color.GRAY);
 		setForeground(Color.GREEN);
 		setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("REMOVE PATIENT");
+		JLabel lblNewLabel = new JLabel("SELECT PATIENT");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("DialogInput", Font.PLAIN, 24));
 		lblNewLabel.setForeground(Color.GREEN);
@@ -51,11 +49,10 @@ public class DeletePatientPanel extends JPanel {
 		textFieldName.setColumns(10);
 		textFieldName.setBounds(179, 97, 194, 20);
 		add(textFieldName);
-
 	}
 	
-	public static String[] deletePatientPrompt(){
-		DeletePatientPanel newPanel = new DeletePatientPanel();
+	public static String[] getPathPrompt(){
+		GetPathPanel newPanel = new GetPathPanel();
 		String[] options = { "ENTER", "CANCEL" };
 		int promptSelect = JOptionPane.showOptionDialog(null, newPanel,
 				"VIRUS", JOptionPane.OK_CANCEL_OPTION,

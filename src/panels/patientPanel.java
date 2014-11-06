@@ -7,7 +7,7 @@
 /*   Instructor:       Dr. Comer                                   */
 /*******************************************************************/
 
-package controller;
+package panels;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;

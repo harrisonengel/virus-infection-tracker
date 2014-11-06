@@ -31,9 +31,10 @@ public class GUI extends JFrame {
 	private JLabel lblTitle, lblVirusImageL, lblVirusImageR;
 	public JButton btnAddFile, btnAddPatient, btnRemovePatient, btnGetPath,
 			btnPrintPreorder;
-	private JTextArea textArea;
 	public JScrollPane scrollPanePrinter;
 	public JTextArea textArea_1;
+	public JButton btnPrintInfo;
+	public JButton btnAllInfectedBy;
 
 	public GUI() {
 		getContentPane().setLayout(null);
@@ -123,13 +124,18 @@ public class GUI extends JFrame {
 		btnPrintPreorder.setBackground(Color.GREEN);
 		btnPrintPreorder.setBounds(10, 221, 189, 38);
 		panel_buttons.add(btnPrintPreorder);
-
-		textArea = new JTextArea();
-		textArea.setForeground(Color.GREEN);
-		textArea.setFont(new Font("DialogInput", Font.PLAIN, 12));
-		textArea.setBackground(Color.LIGHT_GRAY);
-		textArea.setBounds(10, 270, 189, 79);
-		panel_buttons.add(textArea);
+		
+		btnPrintInfo = new JButton("PRINT PATIENT INFO");
+		btnPrintInfo.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnPrintInfo.setBackground(Color.GREEN);
+		btnPrintInfo.setBounds(10, 270, 189, 38);
+		panel_buttons.add(btnPrintInfo);
+		
+		btnAllInfectedBy = new JButton("ALL INFECTED BY");
+		btnAllInfectedBy.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnAllInfectedBy.setBackground(Color.GREEN);
+		btnAllInfectedBy.setBounds(10, 319, 189, 38);
+		panel_buttons.add(btnAllInfectedBy);
 
 	}
 

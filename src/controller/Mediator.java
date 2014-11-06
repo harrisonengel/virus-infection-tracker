@@ -2,7 +2,12 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JOptionPane;
+
+import panels.DeletePatientPanel;
+import panels.GetPathPanel;
+import panels.patientPanel;
 import view.GUI;
 import model.DiseaseManipulator;
 
@@ -25,15 +30,19 @@ public class Mediator implements ActionListener {
 		view.btnGetPath.addActionListener(this);
 		view.btnPrintPreorder.addActionListener(this);
 		view.btnPrintPreorder.addActionListener(this);
-		
+		view.btnPrintInfo.addActionListener(this);
+		view.btnAllInfectedBy.addActionListener(this);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e){
+		view.textArea_1.setText(null);
 		if (e.getSource() == view.btnAddFile) this.addDiseaseFile();
 		if (e.getSource() == view.btnAddPatient) this.addPatient();
 		if (e.getSource() == view.btnRemovePatient) this.removePatient();
 		if (e.getSource() == view.btnGetPath) this.getPath();
 		if (e.getSource() == view.btnPrintPreorder) this.printPreorder();
+		if (e.getSource() == view.btnPrintInfo) this.printInfo();
+		if (e.getSource() == view.btnAllInfectedBy) this.getAllInfectedBy();
 	}
 	
 	public void setView(GUI view){
@@ -73,12 +82,22 @@ public class Mediator implements ActionListener {
 		diseaseModel.removeInfected(patientData[0], patientData[1]);
 	}
 	private void getPath(){
-		String[] patientData = DeletePatientPanel.deletePatientPrompt();
+		String[] patientData = GetPathPanel.getPathPrompt();
 		diseaseModel.printPatientPath(patientData[0], patientData[1], view.textArea_1);
 	}
 
 	private void printPreorder(){
 		diseaseModel.getNodesInorder(view.textArea_1);
+	}
+	
+	private void printInfo(){
+		String[] patientInfo = GetPathPanel.getPathPrompt();
+		diseaseModel.printData(patientInfo[0], patientInfo[1], view.textArea_1);
+	}
+	
+	private void getAllInfectedBy(){
+		String[] patientInfo = GetPathPanel.getPathPrompt();
+		diseaseModel.getAllInfectedBy(patientInfo[0], patientInfo[1], view.textArea_1);
 	}
 
 }

@@ -22,7 +22,7 @@ public class Mediator implements ActionListener {
 		view.btnAddFile.addActionListener(this); 
 		view.btnAddPatient.addActionListener(this);
 		view.btnRemovePatient.addActionListener(this);
-		view.btnSaveTrees.addActionListener(this);
+		view.btnGetPath.addActionListener(this);
 		view.btnPrintPreorder.addActionListener(this);
 		view.btnPrintPreorder.addActionListener(this);
 		
@@ -32,7 +32,7 @@ public class Mediator implements ActionListener {
 		if (e.getSource() == view.btnAddFile) this.addDiseaseFile();
 		if (e.getSource() == view.btnAddPatient) this.addPatient();
 		if (e.getSource() == view.btnRemovePatient) this.removePatient();
-		if (e.getSource() == view.btnSaveTrees) this.saveTrees();
+		if (e.getSource() == view.btnGetPath) this.getPath();
 		if (e.getSource() == view.btnPrintPreorder) this.printPreorder();
 	}
 	
@@ -65,20 +65,20 @@ public class Mediator implements ActionListener {
 	private void addPatient(){
 		String[] patientData = patientPanel.patientPrompt();
 		diseaseModel.addInfectedAt(patientData[1], patientData[0], patientData[2], Integer.parseInt(patientData[3]));
-		
-		
-		
 	}
+	
 	private void removePatient(){
+		String[] patientData = DeletePatientPanel.deletePatientPrompt();
 		
+		diseaseModel.removeInfected(patientData[0], patientData[1]);
 	}
-	private void saveTrees(){
-		
+	private void getPath(){
+		String[] patientData = DeletePatientPanel.deletePatientPrompt();
+		diseaseModel.printPatientPath(patientData[0], patientData[1], view.textArea_1);
 	}
 
 	private void printPreorder(){
 		diseaseModel.getNodesInorder(view.textArea_1);
-		//view.getDisplayArea().setVisible(true);
 	}
 
 }

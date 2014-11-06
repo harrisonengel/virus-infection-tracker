@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JTextArea;
 import controller.Mediator;
+import java.util.Stack;
+
 public class DiseaseManipulator {
 	private DiseaseNode head;
 	private Mediator controller;
@@ -74,12 +76,10 @@ public class DiseaseManipulator {
 	}
 	
 	public void getNodesInorder(JTextArea printTo){
-		//this.top = new DefaultMutableTreeNode("Diseases");
 
 		DiseaseNode curDisease = this.head;
-		//DefaultMutableTreeNode diseaseTreeNode = new DefaultMutableTreeNode(curDisease);
+
 		PatientNode curPatient;
-		//DefaultMutableTreeNode patientTreeNode = null;
 		do{	
 			PatientNode head = curDisease.getPatientZero();
 			curPatient = head.getChild();
@@ -96,11 +96,6 @@ public class DiseaseManipulator {
 			} while((curPatient = curPatient.getPreorderSuccessor()) != head);
 			curDisease = curDisease.getDiseasePtr();
 		}while(curDisease != null);
-	}
-	
-	public void displayFromNode(DiseaseNode startingDisease){
-		DiseaseNode curDisease = this.head;
-		
 	}
 
 	
@@ -127,29 +122,35 @@ public class DiseaseManipulator {
 		return toReturn;
 	}
 	
-	public void removeInfected(PatientNode toRemove, PatientNode infector){
-		if (!getInfected(infector).contains(toRemove)){
-			System.err.println("Patient to Remove is not a child of the infector.");
-			return;
+	//TODO make it work
+	public void removeInfected(String toRemoveString, String diseaseString){
+		
+		DiseaseNode disease = this.findDisease(diseaseString);
+		
+		PatientNode prev = disease.getPatientZero();
+		PatientNode findParent = prev.getChild();
+		
+		while(!findParent.getPreorderSuccessor().toString().equalsIgnoreCase(toRemoveString)){
+			findParent = findParent.getPreorderSuccessor();
 		}
-		if (toRemove.toString().equals(infector.getChild().toString())){
-			infector.setChild(toRemove.getSibling(), toRemove.isSiblingThread());
-			System.out.println(infector.getChild().toString());
-		} else {
-			PatientNode prev = infector;
-			while (prev.getSibling() != toRemove){
-				prev = prev.getSibling();
-			}
-			prev.setSibling(toRemove.getSibling(), toRemove.isSiblingThread());
-			System.out.println(prev.getSibling().toString());
-		}
+		if (findParent.getChild().toString().equalsIgnoreCase(toRemoveString)){
+			findParent.deleteChild();
+		} else if (findParent.getSibling().toString().equalsIgnoreCase(toRemoveString)){
+			findParent.deleteSibling();
+		} else return;
+		
 	}
+	
 
 	public void addInfectedAt(String diseaseString, String patientToAdd,
 			String parent, int k) {
+		
 		DiseaseNode disease = findDisease(diseaseString);
-		PatientNode newPatient = PatientNode.createPatient(patientToAdd);
+		
 		PatientNode infector = findPatient(parent, disease);
+		patientToAdd = (infector.getDepth() + 1) + "/" + patientToAdd; 
+		PatientNode newPatient = PatientNode.createPatient(patientToAdd);
+		
 		
 		if (getInfected(infector).size() < (k - 1))
 			System.err.println("k-1 > number of children ");
@@ -160,7 +161,7 @@ public class DiseaseManipulator {
 			for (int i = 1; i < (k-1); i++) {
 				prevChild = prevChild.getSibling();
 			}
-			prevChild.setSibling(newPatient, prevChild.isSiblingThread());
+			prevChild.addSibling(disease, newPatient);
 		}
 	}
 	
@@ -181,6 +182,39 @@ public class DiseaseManipulator {
 			curDisease = curDisease.getDiseasePtr();
 		}
 		return curDisease;
+	}
+	
+	public void printPatientPath(String patientString, String diseaseString, JTextArea printTo){
+		Stack<PatientNode> st = new Stack<PatientNode>();
+		DiseaseNode disease = this.findDisease(diseaseString);
+
+		PatientNode curPatient = disease.getPatientZero().getChild();
+		while(!curPatient.toString().equalsIgnoreCase(patientString)){
+			if(!curPatient.isChildThread()) {
+				st.push(curPatient);
+				curPatient = curPatient.getChild();
+			} else {
+				if (curPatient.isSiblingThread()){
+					while(curPatient.isSiblingThread()){
+						curPatient = curPatient.getSibling();
+					}
+					
+					while(!((PatientNode)st.peek()).toString().equalsIgnoreCase(curPatient.toString())){
+						st.pop();
+					}
+					st.pop();
+				}
+				curPatient = curPatient.getSibling();
+				if(curPatient.isPatientZero()) return; //TODO message user that patient was not found.
+			}
+		}
+		
+		printTo.append(patientString);
+		while(!st.isEmpty()){
+			printTo.append(" was infected by " + ((PatientNode)st.pop()).toString());
+		}
+		printTo.append("\n");
+		
 	}
 	
 }

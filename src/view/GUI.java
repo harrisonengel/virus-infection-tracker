@@ -29,37 +29,40 @@ public class GUI extends JFrame {
 	public Mediator controller;
 	private JPanel panel_header, panel_buttons;
 	private JLabel lblTitle, lblVirusImageL, lblVirusImageR;
-	public JButton btnAddFile, btnAddPatient,  btnRemovePatient, btnSaveTrees, btnPrintPreorder;
+	public JButton btnAddFile, btnAddPatient, btnRemovePatient, btnGetPath,
+			btnPrintPreorder;
 	private JTextArea textArea;
 	public JScrollPane scrollPanePrinter;
 	public JTextArea textArea_1;
-	
+
 	public GUI() {
 		getContentPane().setLayout(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(1000, 700);
-		
+
 		this.getContentPane().setBackground(Color.DARK_GRAY);
 		this.setBounds(100, 100, 700, 576);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(null);
-		
+
 		Panel panel = new Panel();
 		panel.setBackground(Color.BLACK);
 		panel.setBounds(225, 162, 449, 365);
 		getContentPane().add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		scrollPanePrinter = new JScrollPane();
-		scrollPanePrinter.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPanePrinter.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPanePrinter
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPanePrinter
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		panel.add(scrollPanePrinter);
-		
+
 		textArea_1 = new JTextArea();
 		textArea_1.setFont(new Font("DialogInput", Font.PLAIN, 14));
 		textArea_1.setForeground(Color.GREEN);
 		textArea_1.setBackground(Color.BLACK);
 		scrollPanePrinter.setViewportView(textArea_1);
-		
+
 		panel_header = new JPanel();
 		panel_header.setBackground(Color.GRAY);
 		panel_header.setBounds(0, 0, 684, 156);
@@ -108,26 +111,26 @@ public class GUI extends JFrame {
 		btnRemovePatient.setBounds(10, 117, 189, 38);
 		panel_buttons.add(btnRemovePatient);
 
-		btnSaveTrees = new JButton("SAVE TREES");
-		btnSaveTrees.setFont(new Font("DialogInput", Font.PLAIN, 12));
+		btnGetPath = new JButton("GET PATH");
+		btnGetPath.setFont(new Font("DialogInput", Font.PLAIN, 12));
 
-		btnSaveTrees.setBackground(new Color(0, 255, 0));
-		btnSaveTrees.setBounds(10, 172, 189, 38);
-		panel_buttons.add(btnSaveTrees);
-		
+		btnGetPath.setBackground(new Color(0, 255, 0));
+		btnGetPath.setBounds(10, 172, 189, 38);
+		panel_buttons.add(btnGetPath);
+
 		btnPrintPreorder = new JButton("PRINT PREORDER");
 		btnPrintPreorder.setFont(new Font("DialogInput", Font.PLAIN, 12));
 		btnPrintPreorder.setBackground(Color.GREEN);
 		btnPrintPreorder.setBounds(10, 221, 189, 38);
 		panel_buttons.add(btnPrintPreorder);
-		
+
 		textArea = new JTextArea();
 		textArea.setForeground(Color.GREEN);
 		textArea.setFont(new Font("DialogInput", Font.PLAIN, 12));
 		textArea.setBackground(Color.LIGHT_GRAY);
 		textArea.setBounds(10, 270, 189, 79);
 		panel_buttons.add(textArea);
-		
+
 	}
 
 	/**
@@ -136,12 +139,12 @@ public class GUI extends JFrame {
 	public void initialize() {
 		this.setVisible(true);
 	}
-	
-	public JTextArea getDisplayArea(){
+
+	public JTextArea getDisplayArea() {
 		return this.textArea_1;
 	}
-	
-	public void setController(Mediator controller){
+
+	public void setController(Mediator controller) {
 		this.controller = controller;
 	}
 }

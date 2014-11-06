@@ -59,6 +59,7 @@ public class PatientNode {
 	}
 
 	public void setSibling(PatientNode sibling, boolean isThread) {
+		
 		this.siblingPointer = sibling;
 		this.rightThread = isThread;
 	}
@@ -115,7 +116,20 @@ public class PatientNode {
 			return findNext.getSibling();
 		}
 	}
-
+	
+	public void deleteChild(){
+		PatientNode getThread = this;
+		while (!getThread.isChildThread()){
+			getThread = getThread.getChild();
+		}
+		this.setChild(getThread.getChild(), true);
+	}
+	
+	public void deleteSibling(){
+		PatientNode toDelete = this.getSibling();
+		this.setSibling(toDelete.getSibling(), toDelete.isSiblingThread());
+	}
+	
 	public String toString() {
 		return ( this.first + " " + this.last);
 	}

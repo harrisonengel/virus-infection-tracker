@@ -13,22 +13,17 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Component;
-
 import javax.swing.JTextField;
-
 import java.util.InputMismatchException;
-
 import javax.swing.JRadioButton;
-
 import java.awt.Choice;
-import java.awt.Label;
 
 public class patientPanel extends JPanel {
+
+	private static final long serialVersionUID = 1L;
 	private JTextField textFieldFirstName;
 	private JTextField textFieldMiddleName;
 	private JTextField textFieldLastName;
@@ -355,7 +350,7 @@ public class patientPanel extends JPanel {
 					"VIRUS", JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.PLAIN_MESSAGE, null, options, "ENTER");
 			if (promptSelect == JOptionPane.OK_OPTION){
-				String patientData = 0 + "/" + prompt.getFirst() + "/" + prompt.getMiddle() + "/"
+				String patientData = prompt.getFirst() + "/" + prompt.getMiddle() + "/"
 						+ prompt.getLast() + "/" + prompt.getSsn() + "/"
 						+ prompt.getAge() + "/" + prompt.getGender() + "/"
 						+ prompt.getCity() + "/" + prompt.getState() + "/"
@@ -375,6 +370,6 @@ public class patientPanel extends JPanel {
 							"Error, incorrect input. Make sure your age is an integer number, not a spelled out number (like \"two\").");
 			return null;
 		}
-
 	}
+
 }

@@ -11,8 +11,6 @@ package model;
 
 import java.util.StringTokenizer;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 public class PatientNode {
 	private String first, middle, last, ssn, age, gender, city, state, date;
 	private int depthNumber;
@@ -56,11 +54,7 @@ public class PatientNode {
 	
 	//Returns the functional Patient Node for patientZero
 	public void makePatientZero(){
-		PatientNode patientZeroHeader;
-		//patientZeroHeader = (PatientNode) patientZero.clone();
 		this.isPatientZero= true;
-		//patientZero.setChild(patientZeroHeader, true);
-		//patientZero.setSibling(patientZeroHeader, true);
 		
 	}
 

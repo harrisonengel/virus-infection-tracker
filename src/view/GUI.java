@@ -15,27 +15,24 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import controller.*;
-
 import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTree;
 import javax.swing.JScrollPane;
-import javax.swing.tree.TreeSelectionModel;
-
 import java.awt.Font;
-
 import javax.swing.JTextArea;
+import java.awt.Panel;
+import java.awt.BorderLayout;
+import javax.swing.ScrollPaneConstants;
 
 public class GUI extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	public Mediator controller;
-	public JTree tree;	
-	private JPanel panel_header, panel_buttons, panel_display;
+	private JPanel panel_header, panel_buttons;
 	private JLabel lblTitle, lblVirusImageL, lblVirusImageR;
 	public JButton btnAddFile, btnAddPatient,  btnRemovePatient, btnSaveTrees, btnPrintPreorder;
 	private JTextArea textArea;
-	private JScrollPane scrollPane;
+	public JScrollPane scrollPanePrinter;
+	public JTextArea textArea_1;
 	
 	public GUI() {
 		getContentPane().setLayout(null);
@@ -47,20 +44,22 @@ public class GUI extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(null);
 		
-		tree = new JTree();
-		tree.setForeground(Color.GREEN);
-		tree.setFont(new Font("DialogInput", Font.PLAIN, 14));
-		tree.setBackground(Color.LIGHT_GRAY);
-		tree.setShowsRootHandles(true);
-		tree.setCellRenderer(new virusTreeCell());
-		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		/*tree.addTreeSelectionListener(new TreeSelectionListener(){
-			public void valueChanged(TreeSelectionEvent e) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
-				if (node == null) return;
-			}
-		});*/
-
+		Panel panel = new Panel();
+		panel.setBackground(Color.BLACK);
+		panel.setBounds(225, 162, 449, 365);
+		getContentPane().add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		scrollPanePrinter = new JScrollPane();
+		scrollPanePrinter.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPanePrinter.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		panel.add(scrollPanePrinter);
+		
+		textArea_1 = new JTextArea();
+		textArea_1.setFont(new Font("DialogInput", Font.PLAIN, 14));
+		textArea_1.setForeground(Color.GREEN);
+		textArea_1.setBackground(Color.BLACK);
+		scrollPanePrinter.setViewportView(textArea_1);
+		
 		panel_header = new JPanel();
 		panel_header.setBackground(Color.GRAY);
 		panel_header.setBounds(0, 0, 684, 156);
@@ -111,22 +110,7 @@ public class GUI extends JFrame {
 
 		btnSaveTrees = new JButton("SAVE TREES");
 		btnSaveTrees.setFont(new Font("DialogInput", Font.PLAIN, 12));
-		/*btnSaveTrees.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fc = new JFileChooser();
-				int returnVal = fc.showSaveDialog(frame);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-					try (FileWriter fw = new FileWriter(fc.getSelectedFile())) {
-
-					} catch (IOException i) {
-						JOptionPane.showMessageDialog(frame,
-										"Error saving file. Make sure you are using a .txt extension!");
-					}
-				} 
-				
-			}
-		});*/
 		btnSaveTrees.setBackground(new Color(0, 255, 0));
 		btnSaveTrees.setBounds(10, 172, 189, 38);
 		panel_buttons.add(btnSaveTrees);
@@ -143,18 +127,7 @@ public class GUI extends JFrame {
 		textArea.setBackground(Color.LIGHT_GRAY);
 		textArea.setBounds(10, 270, 189, 79);
 		panel_buttons.add(textArea);
-
-		panel_display = new JPanel();
-		panel_display.setBackground(new Color(192, 192, 192));
-		panel_display.setBounds(229, 167, 445, 360);
-		this.getContentPane().add(panel_display);
-		panel_display.setLayout(null);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 445, 322);
-		panel_display.add(scrollPane);
-		
-		scrollPane.setColumnHeaderView(tree);
 	}
 
 	/**
@@ -164,8 +137,11 @@ public class GUI extends JFrame {
 		this.setVisible(true);
 	}
 	
+	public JTextArea getDisplayArea(){
+		return this.textArea_1;
+	}
+	
 	public void setController(Mediator controller){
 		this.controller = controller;
-		this.tree.setModel(controller.getTreeModel());
 	}
 }

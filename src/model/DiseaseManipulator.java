@@ -14,22 +14,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-
+import javax.swing.JTextArea;
 import controller.Mediator;
-
 public class DiseaseManipulator {
 	private DiseaseNode head;
-	private DefaultTreeModel treeModel;
 	private Mediator controller;
-	private DefaultMutableTreeNode top;
+
 	
 	public DiseaseManipulator(){
-		top = new DefaultMutableTreeNode("Diseases");
-		treeModel = new DefaultTreeModel(top);
+
 	}
 	public void setController(Mediator controller){
 		this.controller = controller;
@@ -70,7 +63,6 @@ public class DiseaseManipulator {
 				}
 			}
 			
-			displayNodes();
 			er.close();
 		} catch (FileNotFoundException e){
 			System.err.println("Can't open " + fileName);
@@ -81,50 +73,29 @@ public class DiseaseManipulator {
 		
 	}
 	
-	public void displayNodes(){
-		this.top = new DefaultMutableTreeNode("Diseases");
-		
+	public void getNodesInorder(JTextArea printTo){
+		//this.top = new DefaultMutableTreeNode("Diseases");
+
 		DiseaseNode curDisease = this.head;
-		DefaultMutableTreeNode diseaseTreeNode = new DefaultMutableTreeNode(curDisease);
+		//DefaultMutableTreeNode diseaseTreeNode = new DefaultMutableTreeNode(curDisease);
 		PatientNode curPatient;
-		DefaultMutableTreeNode patientTreeNode = null;
+		//DefaultMutableTreeNode patientTreeNode = null;
 		do{	
 			PatientNode head = curDisease.getPatientZero();
-			curPatient = head;
-			top.add(diseaseTreeNode);
-			patientTreeNode = new DefaultMutableTreeNode(curPatient.getChild());
-			diseaseTreeNode.add(patientTreeNode);
-			System.out.println("************" + curDisease.toString() + "****************");
-			do{
-				patientTreeNode = new DefaultMutableTreeNode(curPatient);
-				// Same as getPreorderSuccessor()
-				if (!curPatient.isChildThread()){
-					DefaultMutableTreeNode tempPatient = new DefaultMutableTreeNode(curPatient.getChild());
-					patientTreeNode.add(tempPatient);
-					curPatient = curPatient.getChild();
-				} else {
-					PatientNode findNext = curPatient;
-					while(findNext.isSiblingThread()){
-						findNext = findNext.getSibling();
-						if(findNext.isPatientZero()){
-							curPatient = findNext;
-							continue;
-						} else patientTreeNode = new DefaultMutableTreeNode(findNext);
-					}
-					curPatient = findNext.getSibling();
-					DefaultMutableTreeNode tempPatient = new DefaultMutableTreeNode(curPatient);
-					patientTreeNode.add(tempPatient);
-					patientTreeNode = tempPatient;
-				}
-				
-				System.out.println(patientTreeNode.toString());
+			curPatient = head.getChild();
 
-			} while(curPatient.getPreorderSuccessor() != head);
+			printTo.append("************" + curDisease.toString() + "****************" + "\n");
+			do{
+				
+				String indent = "";
+				for (int i=1; i<curPatient.getDepth(); i++){
+					indent = indent + "      ";
+				}
+				printTo.append(indent + curPatient.toString() + "\n" );
+				
+			} while((curPatient = curPatient.getPreorderSuccessor()) != head);
 			curDisease = curDisease.getDiseasePtr();
-			if (curDisease != null) diseaseTreeNode = new DefaultMutableTreeNode(curDisease);
 		}while(curDisease != null);
-		
-		this.treeModel = new DefaultTreeModel(top);
 	}
 	
 	public void displayFromNode(DiseaseNode startingDisease){
@@ -211,11 +182,6 @@ public class DiseaseManipulator {
 		}
 		return curDisease;
 	}
-
-	public DefaultTreeModel getTreeModel(){
-		return this.treeModel;
-	}
-	
 	
 }
 

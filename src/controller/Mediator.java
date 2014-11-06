@@ -3,11 +3,6 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import view.GUI;
 import model.DiseaseManipulator;
 
@@ -29,13 +24,7 @@ public class Mediator implements ActionListener {
 		view.btnRemovePatient.addActionListener(this);
 		view.btnSaveTrees.addActionListener(this);
 		view.btnPrintPreorder.addActionListener(this);
-		view.tree.addTreeSelectionListener(new TreeSelectionListener(){
-			public void valueChanged(TreeSelectionEvent e) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)view.tree.getLastSelectedPathComponent();
-				if (node == null) return;
-			}
-		});
-		
+		view.btnPrintPreorder.addActionListener(this);
 		
 	}
 	@Override
@@ -44,6 +33,7 @@ public class Mediator implements ActionListener {
 		if (e.getSource() == view.btnAddPatient) this.addPatient();
 		if (e.getSource() == view.btnRemovePatient) this.removePatient();
 		if (e.getSource() == view.btnSaveTrees) this.saveTrees();
+		if (e.getSource() == view.btnPrintPreorder) this.printPreorder();
 	}
 	
 	public void setView(GUI view){
@@ -61,7 +51,7 @@ public class Mediator implements ActionListener {
 				String fileName = fileManipulator.getFileName();
 				if (fileName != null) {
 					diseaseModel.createDiseaseForest(fileName);
-					view.tree.setModel(diseaseModel.getTreeModel());
+					
 				}
 			} catch (NullPointerException np) {
 				JOptionPane.showMessageDialog(view,
@@ -86,12 +76,9 @@ public class Mediator implements ActionListener {
 		
 	}
 
-	
-	public JTree getTree(){
-		return view.tree;
+	private void printPreorder(){
+		diseaseModel.getNodesInorder(view.textArea_1);
+		//view.getDisplayArea().setVisible(true);
 	}
-	public DefaultTreeModel getTreeModel(){
-		return diseaseModel.getTreeModel();
-	}
-	
+
 }

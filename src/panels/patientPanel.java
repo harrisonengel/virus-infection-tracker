@@ -13,15 +13,32 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.JTextField;
-import java.util.InputMismatchException;
-import javax.swing.JRadioButton;
-import java.awt.Choice;
 
-public class patientPanel extends JPanel {
+import javax.swing.JTextField;
+
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+
+import javax.swing.JRadioButton;
+
+import execptions.CancelOptionSelected;
+import execptions.IncorrectInputException;
+
+import java.awt.Choice;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JComboBox;
+
+import model.DiseaseManipulator;
+import nodes.DiseaseNode;
+import nodes.PatientNode;
+
+public class patientPanel extends JPanel  implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldFirstName;
@@ -36,14 +53,17 @@ public class patientPanel extends JPanel {
 	private JRadioButton rdbtnMale;
 	private Choice choiceMonth;
 	private Choice choiceDay;
-	private JTextField textFieldDisease;
-	private JTextField textFieldExposee;
-	private JTextField textFieldInfector;
+	private JComboBox<DiseaseNode> comboBoxDisease;
+	private JComboBox<PatientNode> comboBoxInfector;
+	private JComboBox<Integer> comboBoxExposee;
+	private DiseaseManipulator dm;
 
 	/**
 	 * Create the panel.
+	 * @throws IncorrectInputException 
 	 */
-	public patientPanel() {
+	public patientPanel(DiseaseManipulator dm) throws IncorrectInputException {
+		this.dm = dm;
 
 		Dimension minimumSize = new Dimension(350, 400);
 		setPreferredSize(new Dimension(350, 527));
@@ -224,34 +244,42 @@ public class patientPanel extends JPanel {
 		lblDisease.setBounds(10, 364, 100, 25);
 		add(lblDisease);
 		
-		textFieldDisease = new JTextField();
-		textFieldDisease.setColumns(10);
-		textFieldDisease.setBounds(140, 364, 175, 25);
-		add(textFieldDisease);
-		
 		JLabel lblExposeeNumber = new JLabel("Exposee Number");
 		lblExposeeNumber.setForeground(Color.GREEN);
 		lblExposeeNumber.setFont(new Font("DialogInput", Font.BOLD, 14));
-		lblExposeeNumber.setBounds(10, 408, 118, 25);
+		lblExposeeNumber.setBounds(10, 455, 118, 25);
 		add(lblExposeeNumber);
-		
-		textFieldExposee = new JTextField();
-		textFieldExposee.setColumns(10);
-		textFieldExposee.setBounds(140, 408, 175, 25);
-		add(textFieldExposee);
 		
 		JLabel lblInfector = new JLabel("Infector");
 		lblInfector.setForeground(Color.GREEN);
 		lblInfector.setFont(new Font("DialogInput", Font.BOLD, 14));
-		lblInfector.setBounds(10, 455, 118, 25);
+		lblInfector.setBounds(10, 407, 118, 25);
 		add(lblInfector);
 		
-		textFieldInfector = new JTextField();
-		textFieldInfector.setColumns(10);
-		textFieldInfector.setBounds(140, 455, 175, 25);
-		add(textFieldInfector);
+		comboBoxDisease = new JComboBox<DiseaseNode>();
+		comboBoxDisease.setBounds(140, 367, 175, 25);
+		add(comboBoxDisease);
+		comboBoxDisease.addActionListener(this);
 		
-
+		comboBoxInfector = new JComboBox<PatientNode>();
+		comboBoxInfector.setBounds(140, 410, 175, 25);
+		add(comboBoxInfector);
+		comboBoxInfector.addActionListener(this);
+		
+		comboBoxExposee = new JComboBox<Integer>();
+		comboBoxExposee.setBounds(201, 456, 74, 25);
+		add(comboBoxExposee);
+		
+		for (DiseaseNode disease : dm.getAllDiseases()) {
+			comboBoxDisease.addItem(disease);
+		}
+		
+		try{
+			comboBoxDisease.setSelectedIndex(0);
+			//comboBoxInfector.setSelectedIndex(0);
+		} catch (IllegalArgumentException iae){
+			throw new IncorrectInputException("No Disease data to add to. Make sure you read in a file first.");
+		}
 	}
 
 	private String getFirst() {
@@ -266,34 +294,29 @@ public class patientPanel extends JPanel {
 		return textFieldMiddleName.getText();
 	}
 
-	private String getSsn() {
+	private String getSsn() throws IncorrectInputException {
 		String trySsn = textFieldSsn.getText();
 		try{
+			@SuppressWarnings("unused")
 			int isSsn = Integer.parseInt(trySsn);
-			if (trySsn.length() != 9) return null;
+			if (trySsn.length() != 9) throw new IncorrectInputException("Social Security Numbers must be 9 didgetgs long.");
 			return textFieldSsn.getText();
 		} catch(InputMismatchException ime){
-			JOptionPane.showMessageDialog(null,
-					"Incorect Social Security Number. Make sure it is 9 didgets long and only contains numbers.");
-			return null;
+			throw new IncorrectInputException("Incorect Social Security Number. Make sure it only contains numbers.");
 		}
 	}
 
-	public int getAge() { // returns -1 if entered an impossible age, -2 if
+	public int getAge() throws IncorrectInputException{ // returns -1 if entered an impossible age, -2 if
 							// given a string that cannot be an int
 		try {
 			int age = Integer.parseInt(textFieldAge.getText());
 			if (age >= 0 && age < 125)
 				return age;
-			else{
-				JOptionPane.showMessageDialog(null,
-						"Impossible age for patient (greater than 125 or less than 0)");
-				return -1;
+			else {
+				throw new IncorrectInputException("Impossible age for patient (greater than 125 or less than 0)");
 			}
 		} catch (InputMismatchException ime) {
-			JOptionPane.showMessageDialog(null,
-					"Incorrectly formated entry in AGE field. Make sure AGE is a number and contains no letters.");
-			return -2;
+			throw new IncorrectInputException("Incorrectly formated entry in AGE field. Make sure AGE is a number and contains no letters.");
 		}
 	}
 
@@ -313,26 +336,30 @@ public class patientPanel extends JPanel {
 	}
 	
 	public String getDisease(){
-		return textFieldDisease.getText();
+		return comboBoxDisease.getSelectedItem().toString();
 	}
 	
-	public String getExposeeNumber(){
-		return textFieldExposee.getText();
+	public int getExposeeNumber() throws IncorrectInputException{
+		Integer tryNumber = (Integer)comboBoxExposee.getSelectedItem();
+		return tryNumber.intValue();
+		
 	}
 	
-	public String getInfector(){
-		return textFieldInfector.getText();
+	public PatientNode getInfector(){
+		return (PatientNode) comboBoxInfector.getSelectedItem();
 	}
 
 	// NEED TO FIX TO IDENTIFY IF A CORRECT DATE WAS ENTERED
-	public String getDate() {
+	public String getDate() throws IncorrectInputException{
 		String tryYear = textFieldYear.getText();
 		try {
 			int year = Integer.parseInt(tryYear);
 			return (choiceMonth.getSelectedItem() + "." +
 					choiceDay.getSelectedItem() + "." + year);
 		} catch (InputMismatchException ime){
-			return null;
+			throw new IncorrectInputException("Year input is not a number.");
+		} catch (NumberFormatException nfe){
+			throw new IncorrectInputException("Year input is not a number.");
 		}
 		
 	}
@@ -341,35 +368,53 @@ public class patientPanel extends JPanel {
 	 * Bug: Throws error message on X.
 	 */
 	//TODO Implement custom error for incorrect input or failures
-	public static String[] patientPrompt() {
-		patientPanel prompt = new patientPanel();
+	public static String[] patientPrompt(DiseaseManipulator dm) throws IncorrectInputException, CancelOptionSelected{
+		patientPanel prompt = new patientPanel(dm);
 		String[] toReturn = null;
-		try {
-			String[] options = { "ENTER", "CANCEL" };
-			int promptSelect = JOptionPane.showOptionDialog(null, prompt,
-					"VIRUS", JOptionPane.OK_CANCEL_OPTION,
-					JOptionPane.PLAIN_MESSAGE, null, options, "ENTER");
-			if (promptSelect == JOptionPane.OK_OPTION){
-				String patientData = prompt.getFirst() + "/" + prompt.getMiddle() + "/"
-						+ prompt.getLast() + "/" + prompt.getSsn() + "/"
-						+ prompt.getAge() + "/" + prompt.getGender() + "/"
-						+ prompt.getCity() + "/" + prompt.getState() + "/"
-						+ prompt.getDate() + "/"; 
-				String disease = prompt.getDisease();
-				String exposeeNumber = prompt.getExposeeNumber();
-				String infector = prompt.getInfector();
-				toReturn = new String[]{patientData, disease, infector, exposeeNumber};
-				
-			}
+		String[] options = { "ENTER", "CANCEL" };
+		int promptSelect = JOptionPane.showOptionDialog(null, prompt,
+				"VIRUS", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, "ENTER");
+		if (promptSelect == JOptionPane.OK_OPTION){
+			String patientData = prompt.getFirst() + "/" + prompt.getMiddle() + "/"
+					+ prompt.getLast() + "/" + prompt.getSsn() + "/"
+					+ prompt.getAge() + "/" + prompt.getGender() + "/"
+					+ prompt.getCity() + "/" + prompt.getState() + "/"
+					+ prompt.getDate() + "/"; 
+			String disease = prompt.getDisease();
+			String exposeeNumber = prompt.getExposeeNumber() + "";
+			String infector = prompt.getInfector().toString();
+			toReturn = new String[]{patientData, disease, infector, exposeeNumber};
 			return toReturn;
-		} catch (NumberFormatException nFE) {
-			// Display error message saying something went terribly wrong!!
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"Error, incorrect input. Make sure your age is an integer number, not a spelled out number (like \"two\").");
-			return null;
-		}
+		} else throw new CancelOptionSelected();
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == this.comboBoxDisease) this.setPatients(dm);
+		if (e.getSource() == this.comboBoxInfector) this.setExposee();
+	}
+
+	private void setPatients(DiseaseManipulator dm){
+		try {
+			DiseaseNode disease = (DiseaseNode) comboBoxDisease.getSelectedItem();
+			ArrayList<PatientNode> getPatients = dm.getAllInfected(disease
+					.getPatientZero().toString(), disease.toString());
+			comboBoxInfector.removeAllItems();
+			for (PatientNode patient : getPatients) {
+				comboBoxInfector.addItem(patient);
+			}
+		} catch (IncorrectInputException iie) {
+
+		}
+	}
+	
+	private void setExposee(){
+		PatientNode getPatient = (PatientNode)comboBoxInfector.getSelectedItem();
+		int possibleIndexes = getPatient.getInfected().size();
+		comboBoxExposee.removeAllItems();
+		for (int i=1; i<=possibleIndexes; i++){
+			comboBoxExposee.addItem(new Integer(i));
+		}
+	}
 }

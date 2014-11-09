@@ -16,7 +16,6 @@ public class RunVirus {
 			model = new DiseaseManipulator();
 			controller.setView(view);
 			controller.setModel(model);
-			model.setController(controller);
 			view.setController(controller);
 			controller.addActionListeners(view);
 			view.initialize();

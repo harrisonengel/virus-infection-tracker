@@ -5,6 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nodes.PatientNode;
+import execptions.CancelOptionSelected;
+import execptions.IncorrectInputException;
 import panels.DeletePatientPanel;
 import panels.GetPathPanel;
 import panels.patientPanel;
@@ -36,13 +39,20 @@ public class Mediator implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e){
 		view.textArea_1.setText(null);
-		if (e.getSource() == view.btnAddFile) this.addDiseaseFile();
-		if (e.getSource() == view.btnAddPatient) this.addPatient();
-		if (e.getSource() == view.btnRemovePatient) this.removePatient();
-		if (e.getSource() == view.btnGetPath) this.getPath();
-		if (e.getSource() == view.btnPrintPreorder) this.printPreorder();
-		if (e.getSource() == view.btnPrintInfo) this.printInfo();
-		if (e.getSource() == view.btnAllInfectedBy) this.getAllInfectedBy();
+		try{ 
+			if (e.getSource() == view.btnAddFile) this.addDiseaseFile();
+			if (e.getSource() == view.btnAddPatient) this.addPatient();
+			if (e.getSource() == view.btnRemovePatient) this.removePatient();
+			if (e.getSource() == view.btnGetPath) this.getPath();
+			if (e.getSource() == view.btnPrintPreorder) this.printPreorder();
+			if (e.getSource() == view.btnPrintInfo) this.printInfo();
+			if (e.getSource() == view.btnAllInfectedBy) this.getAllInfectedBy();
+		} catch (IncorrectInputException iie){
+			
+		} catch (CancelOptionSelected cos){
+			
+		}
+		
 	}
 	
 	public void setView(GUI view){
@@ -72,32 +82,44 @@ public class Mediator implements ActionListener {
 	}
 
 	private void addPatient(){
-		String[] patientData = patientPanel.patientPrompt();
-		diseaseModel.addInfectedAt(patientData[1], patientData[0], patientData[2], Integer.parseInt(patientData[3]));
+		try{
+			String[] patientData = patientPanel.patientPrompt(diseaseModel);
+			diseaseModel.addInfectedAt(patientData[1], patientData[0], patientData[2], Integer.parseInt(patientData[3]));
+		} catch (IncorrectInputException iie){
+			
+		} catch (CancelOptionSelected cos){
+			
+		}
 	}
 	
-	private void removePatient(){
-		String[] patientData = DeletePatientPanel.deletePatientPrompt();
-		
-		diseaseModel.removeInfected(patientData[0], patientData[1]);
+	private void removePatient() throws IncorrectInputException {
+		try{
+			String[] patientData = DeletePatientPanel.getPrompt(diseaseModel);
+			diseaseModel.removeInfected(patientData[0], patientData[1]);
+		} catch (CancelOptionSelected cos){
+			
+		}
 	}
-	private void getPath(){
-		String[] patientData = GetPathPanel.getPathPrompt();
-		diseaseModel.printPatientPath(patientData[0], patientData[1], view.textArea_1);
+	private void getPath() throws IncorrectInputException, CancelOptionSelected{
+			String[] patientData = GetPathPanel.getPrompt(diseaseModel);
+			diseaseModel.printPatientPath(patientData[0], patientData[1], view.textArea_1);
 	}
 
-	private void printPreorder(){
-		diseaseModel.getNodesInorder(view.textArea_1);
+	private void printPreorder() throws IncorrectInputException{
+		for(String toPrint: diseaseModel.getNodesInorder()){
+			view.textArea_1.append(toPrint + "\n");
+		}
 	}
 	
-	private void printInfo(){
-		String[] patientInfo = GetPathPanel.getPathPrompt();
-		diseaseModel.printData(patientInfo[0], patientInfo[1], view.textArea_1);
+	private void printInfo() throws IncorrectInputException, CancelOptionSelected{
+			String[] patientInfo = GetPathPanel.getPrompt(diseaseModel);
+			diseaseModel.printData(patientInfo[0], patientInfo[1], view.textArea_1);
 	}
 	
-	private void getAllInfectedBy(){
-		String[] patientInfo = GetPathPanel.getPathPrompt();
-		diseaseModel.getAllInfectedBy(patientInfo[0], patientInfo[1], view.textArea_1);
+	private void getAllInfectedBy() throws IncorrectInputException, CancelOptionSelected{
+			String[] patientInfo = GetPathPanel.getPrompt(diseaseModel);
+			for(PatientNode infected : diseaseModel.getAllInfected(patientInfo[0], patientInfo[1])){
+				view.textArea_1.append(infected.toString() + "\n");
+		} 
 	}
-
 }

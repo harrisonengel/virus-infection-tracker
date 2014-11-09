@@ -45,6 +45,9 @@ public class DiseaseNode {
 	public PatientNode getPatientZero(){
 		return this.patientPtr;
 	}
+	public void setPatientPointer(PatientNode pn){
+		this.patientPtr = pn;
+	}
 
 	public void addPatientZero(PatientNode patient){
 		PatientNode patientZeroHeader = patient.clone();

@@ -9,6 +9,7 @@
 
 package nodes;
 
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class PatientNode {
@@ -121,17 +122,38 @@ public class PatientNode {
 		}
 	}
 	
-	public void deleteChild(){
+	public void deleteChild(DiseaseNode disease){
+		if (this.isPatientZero){
+			disease.setPatientPointer(null);
+		}
 		PatientNode getThread = this;
 		while (!getThread.isChildThread()){
 			getThread = getThread.getChild();
 		}
-		this.setChild(getThread.getChild(), true);
+		getThread = getThread.getChild();
+		this.setChild(getThread, true);
+		disease.decrementPatients();
 	}
 	
-	public void deleteSibling(){
+	public void deleteSibling(DiseaseNode disease){
+		
 		PatientNode toDelete = this.getSibling();
-		this.setSibling(toDelete.getSibling(), toDelete.isSiblingThread());
+		PatientNode findRight = toDelete.getSibling();
+		this.setSibling(findRight, toDelete.isSiblingThread());
+		disease.decrementPatients();
+	}
+	
+	public ArrayList<PatientNode> getInfected(){
+		ArrayList<PatientNode> toReturn = new ArrayList<PatientNode>();
+		if (!this.isChildThread()) {
+			PatientNode cur = this.getChild();
+			toReturn.add(cur);
+			while(!cur.isSiblingThread()){
+				cur = cur.getSibling();
+				toReturn.add(cur);
+			}
+		}
+		return toReturn;
 	}
 	
 	public String toString() {

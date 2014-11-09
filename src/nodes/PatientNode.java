@@ -156,8 +156,9 @@ public class PatientNode {
 		return toReturn;
 	}
 	
+	@Override
 	public String toString() {
-		return ( this.first + " " + this.last);
+		return (this.first + " " + this.last);
 	}
 	
 	// TODO create a real implementation of copy() with slightly less overhead.

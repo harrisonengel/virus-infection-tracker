@@ -79,7 +79,7 @@ public class DiseaseManipulator {
 		do{	
 			toReturn.add("************" + curDisease.toString() + "************");
 			if (curDisease.getPatientZero() == null) continue;
-			ArrayList<PatientNode> curPatients = this.getAllInfected(curDisease.getPatientZero().toString(), curDisease.toString());
+			ArrayList<PatientNode> curPatients = this.getAllInfected(curDisease.getPatientZero(), curDisease);
 			for(PatientNode p : curPatients){
 				toReturn.add(p.toString());
 			}
@@ -236,19 +236,18 @@ public class DiseaseManipulator {
 	}
 	
 	//Returns an ArrayList of the tree starting from some patient node (root). 
-	public ArrayList<PatientNode> getAllInfected(String infectorString, String diseaseString) throws IncorrectInputException{
+	public ArrayList<PatientNode> getAllInfected(PatientNode infector, DiseaseNode disease) throws IncorrectInputException{
 		ArrayList<PatientNode> toReturn = new ArrayList<PatientNode>();
-		PatientNode headPatient = this.findPatient(infectorString, this.findDisease(diseaseString));
-		PatientNode curPatient = headPatient;
+		PatientNode curPatient = infector;
 		boolean wasPatientZero = curPatient.isPatientZero;
 		curPatient.makePatientZero();
 
 		do{
 			toReturn.add(curPatient);
 			curPatient = curPatient.getPreorderSuccessor();
-		} while(curPatient != headPatient);
+		} while(curPatient != infector);
 		
-		if (!wasPatientZero) headPatient.makeNormalPatient();
+		if (!wasPatientZero) infector.makeNormalPatient();
 		return toReturn;
 	}
 	

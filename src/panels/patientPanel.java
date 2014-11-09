@@ -259,12 +259,12 @@ public class patientPanel extends JPanel  implements ActionListener{
 		comboBoxDisease = new JComboBox<DiseaseNode>();
 		comboBoxDisease.setBounds(140, 367, 175, 25);
 		add(comboBoxDisease);
-		comboBoxDisease.addActionListener(this);
+		
 		
 		comboBoxInfector = new JComboBox<PatientNode>();
 		comboBoxInfector.setBounds(140, 410, 175, 25);
 		add(comboBoxInfector);
-		comboBoxInfector.addActionListener(this);
+		
 		
 		comboBoxExposee = new JComboBox<Integer>();
 		comboBoxExposee.setBounds(201, 456, 74, 25);
@@ -274,12 +274,20 @@ public class patientPanel extends JPanel  implements ActionListener{
 			comboBoxDisease.addItem(disease);
 		}
 		
+		comboBoxDisease.addActionListener(this);
 		try{
 			comboBoxDisease.setSelectedIndex(0);
-			//comboBoxInfector.setSelectedIndex(0);
 		} catch (IllegalArgumentException iae){
 			throw new IncorrectInputException("No Disease data to add to. Make sure you read in a file first.");
 		}
+		
+		comboBoxInfector.addActionListener(this);
+		try{
+			comboBoxInfector.setSelectedIndex(0);
+		} catch (IllegalArgumentException iae){
+			throw new IncorrectInputException("No Disease data to add to. Make sure you read in a file first.");
+		}
+		
 	}
 
 	private String getFirst() {
@@ -397,9 +405,9 @@ public class patientPanel extends JPanel  implements ActionListener{
 
 	private void setPatients(DiseaseManipulator dm){
 		try {
-			DiseaseNode disease = (DiseaseNode) comboBoxDisease.getSelectedItem();
+			DiseaseNode disease = (DiseaseNode)comboBoxDisease.getSelectedItem();
 			ArrayList<PatientNode> getPatients = dm.getAllInfected(disease
-					.getPatientZero().toString(), disease.toString());
+					.getPatientZero(), disease);
 			comboBoxInfector.removeAllItems();
 			for (PatientNode patient : getPatients) {
 				comboBoxInfector.addItem(patient);

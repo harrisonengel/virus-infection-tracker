@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import nodes.DiseaseNode;
 import nodes.PatientNode;
 import execptions.CancelOptionSelected;
 import execptions.IncorrectInputException;
@@ -118,7 +119,9 @@ public class Mediator implements ActionListener {
 	
 	private void getAllInfectedBy() throws IncorrectInputException, CancelOptionSelected{
 			String[] patientInfo = GetPathPanel.getPrompt(diseaseModel);
-			for(PatientNode infected : diseaseModel.getAllInfected(patientInfo[0], patientInfo[1])){
+			DiseaseNode disease = diseaseModel.findDisease(patientInfo[1]);
+			PatientNode patient = diseaseModel.findPatient(patientInfo[0], disease);
+			for(PatientNode infected : diseaseModel.getAllInfected(patient, disease)){
 				view.textArea_1.append(infected.toString() + "\n");
 		} 
 	}

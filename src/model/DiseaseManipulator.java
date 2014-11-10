@@ -81,7 +81,9 @@ public class DiseaseManipulator {
 			if (curDisease.getPatientZero() == null) continue;
 			ArrayList<PatientNode> curPatients = this.getAllInfected(curDisease.getPatientZero(), curDisease);
 			for(PatientNode p : curPatients){
-				toReturn.add(p.toString());
+				String depthString = "";
+				for(int i=1; i<p.getDepth(); i++) depthString = depthString + "     ";
+				toReturn.add(depthString + p.toString());
 			}
 		}while((curDisease = curDisease.getDiseasePtr()) != null);
 		
@@ -174,10 +176,10 @@ public class DiseaseManipulator {
 		return nodesToReturn;
 	}
 
-	public void printPatientPath(String patientString, String diseaseString, JTextArea printTo){
+	public ArrayList<PatientNode> printPatientPath(String patientString, String diseaseString) throws IncorrectInputException{
 		Stack<PatientNode> st = new Stack<PatientNode>();
 		DiseaseNode disease = this.findDisease(diseaseString);
-
+		ArrayList<PatientNode> toReturn = new ArrayList<PatientNode>();
 		PatientNode curPatient = disease.getPatientZero().getChild();
 		while(!curPatient.toString().equalsIgnoreCase(patientString)){
 			if(!curPatient.isChildThread()) {
@@ -195,15 +197,15 @@ public class DiseaseManipulator {
 					st.pop();
 				}
 				curPatient = curPatient.getSibling();
-				if(curPatient.isPatientZero()) return; //TODO message user that patient was not found.
+				if(curPatient.isPatientZero()) throw new IncorrectInputException("Patient not found.");
 			}
 		}
 		
-		printTo.append(patientString);
+		toReturn.add(curPatient);
 		while(!st.isEmpty()){
-			printTo.append(" was infected by " + ((PatientNode)st.pop()).toString());
+			toReturn.add((PatientNode)st.pop());
 		}
-		printTo.append("\n");
+		return toReturn;
 		
 	}
 	
@@ -237,17 +239,20 @@ public class DiseaseManipulator {
 	
 	//Returns an ArrayList of the tree starting from some patient node (root). 
 	public ArrayList<PatientNode> getAllInfected(PatientNode infector, DiseaseNode disease) throws IncorrectInputException{
+		
 		ArrayList<PatientNode> toReturn = new ArrayList<PatientNode>();
 		PatientNode curPatient = infector;
 		boolean wasPatientZero = curPatient.isPatientZero;
 		curPatient.makePatientZero();
-
+		if (curPatient.getChild() == null || curPatient.isChildThread()) return toReturn;
+		curPatient = curPatient.getChild();
 		do{
 			toReturn.add(curPatient);
 			curPatient = curPatient.getPreorderSuccessor();
 		} while(curPatient != infector);
 		
 		if (!wasPatientZero) infector.makeNormalPatient();
+		infector.getChild().makeNormalPatient();
 		return toReturn;
 	}
 	

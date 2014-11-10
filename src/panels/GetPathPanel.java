@@ -109,7 +109,7 @@ public class GetPathPanel extends JPanel implements ActionListener {
 					.getSelectedItem();
 			ArrayList<PatientNode> getPatients = dm.getAllInfected(disease
 					.getPatientZero(), disease);
-			comboBoxPatient.removeAll();
+			comboBoxPatient.removeAllItems();
 			for (PatientNode patient : getPatients) {
 				comboBoxPatient.addItem(patient);
 			}

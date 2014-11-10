@@ -399,15 +399,25 @@ public class patientPanel extends JPanel  implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == this.comboBoxDisease) this.setPatients(dm);
-		if (e.getSource() == this.comboBoxInfector) this.setExposee();
+		try{
+			if (e.getSource() == this.comboBoxDisease) this.setPatients(dm);
+			if (e.getSource() == this.comboBoxInfector) this.setExposee();
+		} catch (NumberFormatException nfe){
+			
+		} catch (InterruptedException ie){
+			
+		}
+			
 	}
 
 	private void setPatients(DiseaseManipulator dm){
 		try {
+			
 			DiseaseNode disease = (DiseaseNode)comboBoxDisease.getSelectedItem();
+		
 			ArrayList<PatientNode> getPatients = dm.getAllInfected(disease
 					.getPatientZero(), disease);
+
 			comboBoxInfector.removeAllItems();
 			for (PatientNode patient : getPatients) {
 				comboBoxInfector.addItem(patient);
@@ -417,12 +427,18 @@ public class patientPanel extends JPanel  implements ActionListener{
 		}
 	}
 	
-	private void setExposee(){
+	private void setExposee() throws NumberFormatException, InterruptedException{
+		
+		if (comboBoxInfector.getSelectedItem() == null) return;
 		PatientNode getPatient = (PatientNode)comboBoxInfector.getSelectedItem();
-		int possibleIndexes = getPatient.getInfected().size();
+		ArrayList<PatientNode> temp = getPatient.getInfected();
+		int possibleIndexes = 0;
+		if(temp != null) possibleIndexes = temp.size();
 		comboBoxExposee.removeAllItems();
-		for (int i=1; i<=possibleIndexes; i++){
-			comboBoxExposee.addItem(new Integer(i));
+		for (int i=0; i<=possibleIndexes; i++){
+			comboBoxExposee.addItem(new Integer(i+1));
 		}
+		
+		
 	}
 }

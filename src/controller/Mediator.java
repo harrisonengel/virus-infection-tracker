@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -66,12 +67,12 @@ public class Mediator implements ActionListener {
 	
 
 	
-	private void addDiseaseFile(){
+	private void addDiseaseFile() throws IncorrectInputException{
 			try {
 				String fileName = fileManipulator.getFileName();
-				if (fileName != null) {
+				if (fileName != null){ 
 					diseaseModel.createDiseaseForest(fileName);
-					
+					this.printPreorder();
 				}
 			} catch (NullPointerException np) {
 				JOptionPane.showMessageDialog(view,
@@ -86,6 +87,7 @@ public class Mediator implements ActionListener {
 		try{
 			String[] patientData = patientPanel.patientPrompt(diseaseModel);
 			diseaseModel.addInfectedAt(patientData[1], patientData[0], patientData[2], Integer.parseInt(patientData[3]));
+			this.printPreorder();
 		} catch (IncorrectInputException iie){
 			
 		} catch (CancelOptionSelected cos){
@@ -97,13 +99,20 @@ public class Mediator implements ActionListener {
 		try{
 			String[] patientData = DeletePatientPanel.getPrompt(diseaseModel);
 			diseaseModel.removeInfected(patientData[0], patientData[1]);
+			this.printPreorder();
 		} catch (CancelOptionSelected cos){
 			
 		}
 	}
 	private void getPath() throws IncorrectInputException, CancelOptionSelected{
 			String[] patientData = GetPathPanel.getPrompt(diseaseModel);
-			diseaseModel.printPatientPath(patientData[0], patientData[1], view.textArea_1);
+			ArrayList<PatientNode> toPrint = diseaseModel.printPatientPath(patientData[0], patientData[1]);
+			
+			for(int i=0; i<toPrint.size(); i++) {
+				String space = "";
+				for(int j=0; j<i; j++) space = space + "    ";
+				view.textArea_1.append(space + toPrint.get(i).toString() + "\n");
+			}
 	}
 
 	private void printPreorder() throws IncorrectInputException{
@@ -121,6 +130,10 @@ public class Mediator implements ActionListener {
 			String[] patientInfo = GetPathPanel.getPrompt(diseaseModel);
 			DiseaseNode disease = diseaseModel.findDisease(patientInfo[1]);
 			PatientNode patient = diseaseModel.findPatient(patientInfo[0], disease);
+			if (patient.isChildThread()){
+				view.textArea_1.append("No one was infected by " + patient.toString());
+				return;
+			}
 			for(PatientNode infected : diseaseModel.getAllInfected(patient, disease)){
 				view.textArea_1.append(infected.toString() + "\n");
 		} 

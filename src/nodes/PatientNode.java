@@ -125,7 +125,14 @@ public class PatientNode {
 	public void deleteChild(DiseaseNode disease){
 		if (this.isPatientZero){
 			disease.setPatientPointer(null);
+			return;
 		}
+		
+		if(!this.getChild().isSiblingThread()){
+			this.setChild(this.getChild().getSibling(), false);
+			return;
+		}
+		
 		PatientNode getThread = this;
 		while (!getThread.isChildThread()){
 			getThread = getThread.getChild();

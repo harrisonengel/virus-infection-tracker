@@ -1,6 +1,10 @@
 package execptions;
 
+//A simple exception class used to throw custom exceptions
+//and prevent user accidents.
 public class CancelOptionSelected extends Exception {
+
+	private static final long serialVersionUID = 1L;
 
 	public CancelOptionSelected() {
 		

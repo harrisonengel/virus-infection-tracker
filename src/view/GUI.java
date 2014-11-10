@@ -23,6 +23,10 @@ import java.awt.Panel;
 import java.awt.BorderLayout;
 import javax.swing.ScrollPaneConstants;
 
+/**************** GUI ****************/
+/*
+ * The GUI class is the View in the VIRUS program.
+ */
 public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -30,46 +34,51 @@ public class GUI extends JFrame {
 	private JPanel panel_header, panel_buttons;
 	private JLabel lblTitle, lblVirusImageL, lblVirusImageR;
 	public JButton btnAddFile, btnAddPatient, btnRemovePatient, btnGetPath,
-			btnPrintPreorder;
-	public JScrollPane scrollPanePrinter;
-	public JTextArea textArea_1;
-	public JButton btnPrintInfo;
-	public JButton btnAllInfectedBy;
+			btnPrintPreorder, btnPrintInfo, btnAllInfectedBy;
+	private JScrollPane scrollPanePrinter;
+	private JTextArea mainTextArea;
+	
 
+	
 	public GUI() {
+		/********************** Content Pane ****************************/
 		getContentPane().setLayout(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(1000, 700);
-
 		this.getContentPane().setBackground(Color.DARK_GRAY);
 		this.setBounds(100, 100, 700, 576);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setLayout(null);
-
+		/********************** Panel ****************************/
 		Panel panel = new Panel();
 		panel.setBackground(Color.BLACK);
 		panel.setBounds(225, 162, 449, 365);
 		getContentPane().add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
+		
+		/********************** ScrollPane ****************************/
 		scrollPanePrinter = new JScrollPane();
 		scrollPanePrinter
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPanePrinter
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		panel.add(scrollPanePrinter);
-
-		textArea_1 = new JTextArea();
-		textArea_1.setFont(new Font("DialogInput", Font.PLAIN, 14));
-		textArea_1.setForeground(Color.GREEN);
-		textArea_1.setBackground(Color.BLACK);
-		scrollPanePrinter.setViewportView(textArea_1);
-
+		
+		/********************** Main TextArea ****************************/
+		mainTextArea = new JTextArea();
+		mainTextArea.setFont(new Font("DialogInput", Font.PLAIN, 14));
+		mainTextArea.setForeground(Color.GREEN);
+		mainTextArea.setBackground(Color.BLACK);
+		scrollPanePrinter.setViewportView(mainTextArea);
+		
+		/********************** Header ****************************/
 		panel_header = new JPanel();
 		panel_header.setBackground(Color.GRAY);
 		panel_header.setBounds(0, 0, 684, 156);
 		this.getContentPane().add(panel_header);
 		panel_header.setLayout(null);
-
+		
+		
 		lblTitle = new JLabel();
 		lblTitle.setBounds(215, -38, 259, 194);
 		lblTitle.setIcon(new ImageIcon(GUI.class
@@ -88,6 +97,7 @@ public class GUI extends JFrame {
 		lblVirusImageR.setBounds(474, 0, 200, 156);
 		panel_header.add(lblVirusImageR);
 
+		/********************** Buttons ****************************/
 		panel_buttons = new JPanel();
 		panel_buttons.setBackground(Color.DARK_GRAY);
 		panel_buttons.setBounds(10, 167, 209, 360);
@@ -124,13 +134,13 @@ public class GUI extends JFrame {
 		btnPrintPreorder.setBackground(Color.GREEN);
 		btnPrintPreorder.setBounds(10, 221, 189, 38);
 		panel_buttons.add(btnPrintPreorder);
-		
+
 		btnPrintInfo = new JButton("PRINT PATIENT INFO");
 		btnPrintInfo.setFont(new Font("DialogInput", Font.PLAIN, 12));
 		btnPrintInfo.setBackground(Color.GREEN);
 		btnPrintInfo.setBounds(10, 270, 189, 38);
 		panel_buttons.add(btnPrintInfo);
-		
+
 		btnAllInfectedBy = new JButton("ALL INFECTED BY");
 		btnAllInfectedBy.setFont(new Font("DialogInput", Font.PLAIN, 12));
 		btnAllInfectedBy.setBackground(Color.GREEN);
@@ -147,7 +157,7 @@ public class GUI extends JFrame {
 	}
 
 	public JTextArea getDisplayArea() {
-		return this.textArea_1;
+		return this.mainTextArea;
 	}
 
 	public void setController(Mediator controller) {

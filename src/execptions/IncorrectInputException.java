@@ -2,6 +2,8 @@ package execptions;
 
 import javax.swing.JOptionPane;
 
+// A simple exception class used to throw custom exceptions
+// and prevent user accidents.
 public class IncorrectInputException extends Exception {
 
 	private static final long serialVersionUID = 1L;
